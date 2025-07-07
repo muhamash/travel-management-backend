@@ -1,6 +1,7 @@
 import { Server } from "http";
-import mongoose from "mongoose";
 import app from "./app/app";
+import { envStrings } from "./app/config/env.config";
+import { dbConnect } from "./app/config/mongoose.config";
 
 let server: Server;
 
@@ -8,14 +9,12 @@ const startServer = async() =>
 {
     try 
     {
-        await mongoose.connect( "mongodb+srv://expressMongo:psFDgctbQYcSy4Kx@atlascluster.cusoal9.mongodb.net/travel-management-level-2?retryWrites=true&w=majority&appName=AtlasCluster" );
+        await dbConnect()
         
-        console.log( `MongoDB database is running 🥭` )
-        
-        server = app.listen( 3000, () =>
+        server = app.listen( envStrings.PORT, () =>
         {
-            console.log( `Server is listening at port : 3000` );
-            console.log(`Server entry : http://localhost:3000 🛜`)
+            console.log( `Server is listening at port : ${envStrings.PORT}` );
+            console.log(`Server entry : http://localhost:${envStrings.PORT} 🛜`)
         })
     }
     catch ( error )
