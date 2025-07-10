@@ -1,6 +1,9 @@
 import express, { Application, NextFunction, Request, Response } from "express";
+import { userRouter } from "./modules/user/user.route";
 
 const app: Application = express();
+
+app.use("api/v1/user", userRouter)
 
 app.get( "/", async( req: Response, res: Request, next: NextFunction ) =>
 {
@@ -12,6 +15,8 @@ app.get( "/", async( req: Response, res: Request, next: NextFunction ) =>
 
     next()
 } );
+
+
 
 
 export default app;

@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Server } from "http";
 import app from "./app/app";
 import { envStrings } from "./app/config/env.config";
 import { dbConnect } from "./app/config/mongoose.config";
+import { shutdown } from "./server.config";
 
 let server: Server;
 
@@ -26,69 +28,92 @@ const startServer = async() =>
 
 startServer();
 
-// unhandled rejection!
-// uncaught rejection!!
-// signal termination sigterm!!!
-
-process.on( "unhandledRejection", (error) =>
+process.on( "unhandledRejection", ( reason: unknown, promise: Promise<never> ) =>
 {
-    console.log( "unhandled rejection found!! server is shuting down!!", error );
+    // const value = await promise;
+    // console.log( value )
+    
+    shutdown( "Unhandled Rejection", reason );
+});
 
-    if ( server )
-    {
-        server.close( () =>
-        {
-            process.exit(1);
-        });
-    }
-
-    process.exit(1)
-} )
-
-process.on( "uncaughtException", ( error ) =>
+process.on( "uncaughtException", ( error: Error ) =>
 {
-    console.log( "uncaughtException found!! server is shuting down!!", error );
-    
-    if ( server )
-    {
-        server.close( () =>
-        {
-            process.exit( 1 );
-        } );
-    }
-    
-    process.exit( 1 )
+    shutdown( "Uncaught Exception", error );
 } );
 
-process.on( "SIGTERM", ( ) =>
+process.on( "SIGTERM", () =>
 {
-    console.log( "sigterm signal found!! server is shuting down!!" );
-        
-    if ( server )
-    {
-        server.close( () =>
-        {
-            process.exit( 1 );
-        } );
-    }
-        
-    process.exit( 1 )
+    shutdown( "SIGTERM Signal" );
 } );
 
 process.on( "SIGINT", () =>
 {
-    console.log( "SIGINT signal found!! server is shuting down!!" );
-            
-    if ( server )
-    {
-        server.close( () =>
-        {
-            process.exit( 1 );
-        } );
-    }
-            
-    process.exit( 1 )
+    shutdown( "SIGINT Signal" );
 } );
+
+// unhandled rejection!
+// uncaught rejection!!
+// signal termination sigterm!!!
+
+// process.on( "unhandledRejection", (error) =>
+// {
+//     console.log( "unhandled rejection found!! server is shuting down!!", error );
+
+//     if ( server )
+//     {
+//         server.close( () =>
+//         {
+//             process.exit(1);
+//         });
+//     }
+
+//     process.exit(1)
+// } )
+
+// process.on( "uncaughtException", ( error ) =>
+// {
+//     console.log( "uncaughtException found!! server is shuting down!!", error );
+    
+//     if ( server )
+//     {
+//         server.close( () =>
+//         {
+//             process.exit( 1 );
+//         } );
+//     }
+    
+//     process.exit( 1 )
+// } );
+
+// process.on( "SIGTERM", ( ) =>
+// {
+//     console.log( "sigterm signal found!! server is shuting down!!" );
+        
+//     if ( server )
+//     {
+//         server.close( () =>
+//         {
+//             process.exit( 1 );
+//         } );
+//     }
+        
+//     process.exit( 1 )
+// } );
+
+// process.on( "SIGINT", () =>
+// {
+//     console.log( "SIGINT signal found!! server is shuting down!!" );
+            
+//     if ( server )
+//     {
+//         server.close( () =>
+//         {
+//             process.exit( 1 );
+//         } );
+//     }
+            
+//     process.exit( 1 )
+// } );
 
 // unhandled rejection
 // Promise.reject(new Error("Forgot to catch the promise!"))
