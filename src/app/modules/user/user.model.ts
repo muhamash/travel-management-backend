@@ -3,8 +3,8 @@ import { IAuthProvider, IsActive, IUser, Role } from "./user.interface";
 
 // embedding schema 
 const authProvider = new Schema<IAuthProvider>( {
-    provider: { type: string, require: true },
-    providerId : {type: string, require: true}
+    provider: { type: String, require: true },
+    providerId : {type: String, require: true}
 }, {
     versionKey: __dirname,
     _id: false
