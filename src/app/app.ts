@@ -1,13 +1,14 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import { userRouter } from "./modules/user/user.route";
 import cors from 'cors'
+import { firstVersionRouter } from "./routes/index.route";
 
 const app: Application = express();
 
 app.use( express.json() )
 app.use(cors())
 
-app.use( "/api/v1/user", userRouter )
+app.use( "/api/v1", firstVersionRouter )
 
 
 // global not found route
