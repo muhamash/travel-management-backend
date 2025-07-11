@@ -11,3 +11,10 @@ export const createUserService = async(payload : Partial<IUser>) =>
 
     return user
 }
+
+export const getAllUsersService = async (): IUser[] => 
+{
+    const users = User.find();
+
+    return users;
+}
