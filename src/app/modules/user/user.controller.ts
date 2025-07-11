@@ -2,7 +2,9 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { User } from "./user.model";
-import { createUserService } from "./user.service";
+import { createUserService, getAllUsersService } from "./user.service";
+import { AppError } from "../../errors/App.error";
+import { IUser } from "./user.interface";
 // import { UserServices } from "./user.service";
 
 // const createUserFunction = async (req: Response, res: Response) => {
@@ -15,7 +17,7 @@ import { createUserService } from "./user.service";
 //     })
 // }
 
-export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+export const createUser = async (req: Request, res: Response, next: NextFunction) : void => {
     try {
         // throw new Error("Fake eror")
         // throw new AppError(httpStatus.BAD_REQUEST, "fake error")
@@ -30,16 +32,35 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 
         res.status( httpStatus.CREATED ).json( {
             message: `user created!!`,
+            status : httpStatus.CREATED,
             user
         } );
 
     } catch (error: unknown) {
-        console.log( error );
+        // console.log( error );
         
-        res.status( httpStatus.BAD_REQUEST ).json( {
-            message: `Something wrong: ${ error.message }`,
-            error
-        })
-        // next(error)
+        // res.status( httpStatus.BAD_REQUEST ).json( {
+        //     message: `Something wrong: ${ error.message }`,
+        //     error
+        // })
+        next(error)
     }
+}
+
+export const getAllUsers = async ( req: Request, res: Response, next: NextFunction ) : IUser[] =>
+{
+    try
+    {
+        const users = await getAllUsersService();
+
+        
+        
+    }
+    catch ( error )
+    {
+        next(error)
+        
+    }
+
+
 }
