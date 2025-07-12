@@ -7,7 +7,7 @@ export const createUserService = async(payload : Partial<IUser>) =>
     // console.log(name, email)
     const user = await User.create( { name, email } );
 
-    console.log( "created a user: ", user );
+    // console.log( "created a user: ", user );
 
     return user
 }
