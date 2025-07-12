@@ -1,9 +1,9 @@
-import httpStatus from 'http-status-codes';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
-import { envStrings } from '../config/env.config';
-import { AppError } from '../errors/App.error';
+import httpStatus from 'http-status-codes';
+import { AppError } from '../config/errors/App.error';
 
-export const globalErrorResponse = ( error: any, req: Request, res: Response, next: NextFunction ) =>
+export const globalErrorResponse = ( error: unknown, req: Request, res: Response, next: NextFunction ) =>
 {
     if ( error )
     {
@@ -23,7 +23,7 @@ export const globalErrorResponse = ( error: any, req: Request, res: Response, ne
                 message,
                 status: statusCode,
                 success: false,
-                ...( error as any ),
+                ...( error as unknown ),
                 ...(process.env.NODE_ENV === "development" && { stack })
             } )
         }
@@ -38,7 +38,7 @@ export const globalErrorResponse = ( error: any, req: Request, res: Response, ne
                 message,
                 status: statusCode,
                 success: false,
-                ...( error as any ),
+                ...( error as unknown ),
                 ...(process.env.NODE_ENV === "development" && { stack })
             } )
         }
@@ -49,7 +49,7 @@ export const globalErrorResponse = ( error: any, req: Request, res: Response, ne
                 message,
                 status: statusCode,
                 success: false,
-                ...( error as any ),
+                ...( error as unknown ),
                 ...(process.env.NODE_ENV === "development" && { stack })
             } )
         }

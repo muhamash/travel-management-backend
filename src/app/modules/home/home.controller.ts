@@ -1,4 +1,4 @@
-import { Application, NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import httpStatus from 'http-status-codes';
 
 export const homeController = async ( req: Response, res: Request, next: NextFunction ) =>

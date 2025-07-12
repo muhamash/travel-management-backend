@@ -1,11 +1,9 @@
-import express, { Application, NextFunction, Request, Response } from "express";
-import { userRouter } from "./modules/user/user.route";
-import cors from 'cors'
-import { firstVersionRouter } from "./routes/index.route";
-import httpStatus from 'http-status-codes';
+import cors from 'cors';
+import express, { Application } from "express";
 import { globalErrorResponse } from "./middleware/globalError.middleware";
 import { globalNotFoundResponse } from "./middleware/globalNotFound.middleware";
 import { homeController } from "./modules/home/home.controller";
+import { firstVersionRouter } from "./routes/index.route";
 
 const app: Application = express();
 
