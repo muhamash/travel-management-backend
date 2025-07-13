@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
-import { AsyncHandler } from "../modules/user/user.interface";
+import { AsyncHandlerType } from "./utils.type";
 
-export const asyncHandler = ( fn: AsyncHandler ) => ( req: Response, res: Response, next: NextFunction ) =>
+export const asyncHandler = ( fn: AsyncHandlerType ) => ( req: Response, res: Response, next: NextFunction ) =>
 {
     Promise.resolve( fn( req, res, next ) ).catch( ( error: unknown ) =>
     {

@@ -1,15 +1,10 @@
-POST http://localhost:3000/api/v1/user/register
-Content-Type: application/json
-
-{
-    "name": "ashs",
-    "email": "assash@ash.com"
-}
-
-# GET http://localhost:3000/api/v1/user/getAll
+# POST http://localhost:3000/api/v1/user/register
 # Content-Type: application/json
 
 # {
 #     "name": "ashs",
-#     "email": "asssh@ash.com"
+#     "email": "asssassh@ash.com"
 # }
+
+GET http://localhost:3000/api/v1/user/getAll
+Content-Type: application/json

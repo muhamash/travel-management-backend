@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { asyncHandler } from "../../utils/controller.util";
+import { responseFunction } from "../../utils/response.util";
 import { createUserService, getAllUsersService } from "./user.service";
 
 export const createUser = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
@@ -10,19 +11,27 @@ export const createUser = asyncHandler( async ( req: Request, res: Response, nex
 
     if ( !user )
     {
-        res.status( httpStatus.EXPECTATION_FAILED ).json( {
+
+        responseFunction( res, {
             message: `Something went wrong when creating the user`,
-            status: httpStatus.EXPECTATION_FAILED,
-            user: null,
+            statusCode: httpStatus.EXPECTATION_FAILED,
+            data: null,
         } );
+
         return;
     }
-
-    res.status( httpStatus.CREATED ).json( {
-        message: `User created!!`,
-        status: httpStatus.CREATED,
-        user,
-    } );
+    if ( user )
+    {
+        responseFunction( res, {
+            message: `User created!!`,
+            statusCode: httpStatus.CREATED,
+            data: user,
+        } );
+    }
+    else
+    {
+        next()
+    }
 } );
 
 export const getAllUsers = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
@@ -31,28 +40,31 @@ export const getAllUsers = asyncHandler( async ( req: Request, res: Response, ne
 
     if ( !users )
     {
-        res.status( httpStatus.EXPECTATION_FAILED ).json( {
+
+        responseFunction( res, {
             message: `Something went wrong when fetching the users`,
-            status: httpStatus.EXPECTATION_FAILED,
-            users: null,
+            statusCode: httpStatus.EXPECTATION_FAILED,
+            data: null,
         } );
+
         return;
     }
 
     if ( users.length === 0 )
     {
-        res.status( httpStatus.ACCEPTED ).json( {
+        responseFunction( res, {
             message: `Empty Database!!`,
-            status: httpStatus.ACCEPTED,
-            users: null,
-        } );
+            statusCode: httpStatus.ACCEPTED,
+            data: null,
+        });
+
         return;
     }
 
-    res.status( httpStatus.OK ).json( {
+    responseFunction( res, {
         message: "Users retrieved successfully",
-        status: httpStatus.OK,
-        users,
-        total: users.length,
+        statusCode: httpStatus.OK,
+        data: users,
+        meta: users.length,
     } );
 } );
