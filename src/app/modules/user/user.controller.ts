@@ -68,3 +68,4 @@ export const getAllUsers = asyncHandler( async ( req: Request, res: Response, ne
         meta: users.length,
     } );
 } );
+
