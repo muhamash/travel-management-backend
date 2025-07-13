@@ -1,38 +1,26 @@
-import express, { Application, NextFunction, Request, Response } from "express";
-import { userRouter } from "./modules/user/user.route";
-import cors from 'cors'
+import cors from 'cors';
+import express, { Application } from "express";
+import { globalErrorResponse } from "./middleware/globalError.middleware";
+import { globalNotFoundResponse } from "./middleware/globalNotFound.middleware";
+import { homeController } from "./modules/home/home.controller";
 import { firstVersionRouter } from "./routes/index.route";
 
 const app: Application = express();
 
 app.use( express.json() )
-app.use(cors())
+app.use( cors() )
 
+// demo home route 
+app.get( "/", homeController );
+
+// actual business route
 app.use( "/api/v1", firstVersionRouter )
 
 
 // global not found route
-app.use( async (req: Response, res: Request, next: NextFunction) =>
-{
-    res.status( 200 ).json( {
-        success: false,
-        status: "error",
-        message: "Route not found!"
-    } );
-} );
-
-app.get( "/", async( req: Response, res: Request, next: NextFunction ) =>
-{
-    res.status(200).json( {
-        success: true,
-        status: "ok",
-        message: "App is in service!"
-    } );
-
-    next()
-} );
-
-
+app.use( globalNotFoundResponse );
+// global error response
+app.use( globalErrorResponse );
 
 
 export default app;

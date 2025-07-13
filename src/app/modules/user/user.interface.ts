@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
 
 export enum Role {
@@ -39,3 +40,5 @@ export interface IUser {
     bookings?: Types.ObjectId[]
     guides?: Types.ObjectId[]
 }
+
+export type AsyncHandler = ( req: Request, res: Response, next: NextFunction ) => Promise<void>;

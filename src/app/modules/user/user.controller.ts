@@ -1,45 +1,70 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
-import { User } from "./user.model";
-import { createUserService } from "./user.service";
-// import { UserServices } from "./user.service";
+import { asyncHandler } from "../../utils/controller.util";
+import { responseFunction } from "../../utils/response.util";
+import { createUserService, getAllUsersService } from "./user.service";
 
-// const createUserFunction = async (req: Response, res: Response) => {
+export const createUser = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const user = await createUserService( req.body );
 
-//     const user = await UserServices.createUser(req.body)
+    if ( !user )
+    {
 
-//     res.status(httpStatus.CREATED).json({
-//         message: "User Created Successfully",
-//         user
-//     })
-// }
-
-export const createUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        // throw new Error("Fake eror")
-        // throw new AppError(httpStatus.BAD_REQUEST, "fake error")
-
-        // createUserFunction(req, res)
-
-        // const { name, email } = req.body;
-        // // console.log(name, email)
-        // const user = await User.create( { name, email } );
-
-        const user = await createUserService( req.body );
-
-        res.status( httpStatus.CREATED ).json( {
-            message: `user created!!`,
-            user
+        responseFunction( res, {
+            message: `Something went wrong when creating the user`,
+            statusCode: httpStatus.EXPECTATION_FAILED,
+            data: null,
         } );
 
-    } catch (error: unknown) {
-        console.log( error );
-        
-        res.status( httpStatus.BAD_REQUEST ).json( {
-            message: `Something wrong: ${ error.message }`,
-            error
-        })
-        // next(error)
+        return;
     }
-}
+    if ( user )
+    {
+        responseFunction( res, {
+            message: `User created!!`,
+            statusCode: httpStatus.CREATED,
+            data: user,
+        } );
+    }
+    else
+    {
+        next()
+    }
+} );
+
+export const getAllUsers = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const users = await getAllUsersService();
+
+    if ( !users )
+    {
+
+        responseFunction( res, {
+            message: `Something went wrong when fetching the users`,
+            statusCode: httpStatus.EXPECTATION_FAILED,
+            data: null,
+        } );
+
+        return;
+    }
+
+    if ( users.length === 0 )
+    {
+        responseFunction( res, {
+            message: `Empty Database!!`,
+            statusCode: httpStatus.ACCEPTED,
+            data: null,
+        });
+
+        return;
+    }
+
+    responseFunction( res, {
+        message: "Users retrieved successfully",
+        statusCode: httpStatus.OK,
+        data: users,
+        meta: users.length,
+    } );
+} );
