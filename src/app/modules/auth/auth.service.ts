@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import httpStatus from 'http-status-codes';
+import jwt from "jsonwebtoken";
+import { envStrings } from "../../config/env.config";
 import { AppError } from "../../config/errors/App.error";
 import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
@@ -17,7 +19,23 @@ export const credentialLoginService = async(payload: Partial<IUser>) =>
 
         if ( isPassMatch )
         {
-            return email
+            const jwtPayload = {
+                userId: isUser.id,
+                email: isUser.email,
+                password: isUser.password
+            }
+
+            // console.log(isUser)
+            const accessToken = await jwt.sign( jwtPayload, envStrings.ACCESS_TOKEN_SECRET as string, {
+                expiresIn: "5m"
+            } );
+
+            return {
+                email,
+                accessToken,
+                userId: isUser.id,
+                expiresIn: '5m'
+            }
         }
         else
         {
