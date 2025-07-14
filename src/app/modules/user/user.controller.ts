@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
-import { asyncHandler } from "../../utils/controller.util";
 import { responseFunction } from "../../utils/response.util";
+import { asyncHandler } from "../../utils/service.util";
 import { createUserService, getAllUsersService } from "./user.service";
 
 export const createUser = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
