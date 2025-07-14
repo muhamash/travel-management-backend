@@ -16,7 +16,5 @@ export interface TResponse<T>
 
 export type AsyncHandlerType = ( req: Request, res: Response, next: NextFunction ) => Promise<void>;
 
-export interface ParsedZodIssue {
-  field: string;
-  message: string;
-}
+export type ParsedZodIssue = Record<string, string>;
+export type ErrorResponsePayload = Record<string, unknown>;

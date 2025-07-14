@@ -7,11 +7,11 @@ import { createUserService, getAllUsersService } from "./user.service";
 
 export const createUser = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
+    // console.log(req.body)
     const user = await createUserService( req.body );
 
     if ( !user )
     {
-
         responseFunction( res, {
             message: `Something went wrong when creating the user`,
             statusCode: httpStatus.EXPECTATION_FAILED,
