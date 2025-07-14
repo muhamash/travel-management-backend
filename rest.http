@@ -1,4 +1,16 @@
-POST http://localhost:3000/api/v1/user/register
+# POST http://localhost:3000/api/v1/user/register
+# Content-Type: application/json
+
+# {
+#     "name": "ash",
+#     "email": "aa@ash.com",
+#     "password":"A@12345678"
+# }
+
+# GET http://localhost:3000/api/v1/user/getAll
+# Content-Type: application/json
+
+POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
@@ -6,6 +18,3 @@ Content-Type: application/json
     "email": "aa@ash.com",
     "password":"A@12345678"
 }
-
-# GET http://localhost:3000/api/v1/user/getAll
-# Content-Type: application/json
