@@ -1,5 +1,1 @@
-export interface EnvString {
-    PORT: string;
-    DB_URL: string;
-    NODE_ENV: string;
-};
+export type EnvString = Record<string, string>;

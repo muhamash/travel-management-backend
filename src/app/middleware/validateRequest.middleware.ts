@@ -10,6 +10,7 @@ export const validateRequest = ( zodSchema: AnyZodObject ) => async ( req: Reque
     }
     catch ( error: unknown )
     {
+        // console.log(error.format())
         next(error)
     }
 }
