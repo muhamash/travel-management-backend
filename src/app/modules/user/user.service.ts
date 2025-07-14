@@ -5,7 +5,7 @@ import { User } from "./user.model";
 export const createUserService = async(payload : Partial<IUser>) =>
 {
     const { email, password, ...rest } = payload;
-    // console.log(name, email)
+    // console.log(payload)
 
     const hashedPass = await bcrypt.hash( password as string, 10 );
     
@@ -16,7 +16,7 @@ export const createUserService = async(payload : Partial<IUser>) =>
     }
     const user = await User.create( { email, auths: [provider], password: hashedPass, ...rest } );
 
-    console.log( "created a user: ", user, password, hashedPass );
+    // console.log( "created a user: ", user, password, hashedPass );
 
     return user
 }

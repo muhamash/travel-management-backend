@@ -3,9 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { AppError } from "../config/errors/App.error";
 import { isZodError, parseZodError } from "../utils/middleware.util";
+import { ErrorResponsePayload } from "../utils/utils.type";
 
 export const globalErrorResponse = (
-    error: unknownn,
+    error: unknown,
     req: Request,
     res: Response,
     next: NextFunction
@@ -15,7 +16,7 @@ export const globalErrorResponse = (
     let message = "Something went wrong";
     let stack: string | undefined;
 
-    // 🟢 Handle Zod errors with fields
+    //  Zod errors with fields
     if ( isZodError( error ) )
     {
         const fieldIssues = parseZodError( error );
@@ -36,14 +37,14 @@ export const globalErrorResponse = (
         return res.status( httpStatus.BAD_REQUEST ).json( responsePayload );
     }
 
-    // 🟠 Handle custom AppError
+    //  custom AppError
     if ( error instanceof AppError )
     {
         statusCode = error.statusCode;
         message = error.message;
         stack = error.stack;
     }
-    // 🔵 Handle general Error
+    //  general Error
     else if ( error instanceof Error )
     {
         message = error.message;
@@ -51,15 +52,15 @@ export const globalErrorResponse = (
         // fallback if no custom statusCode
         statusCode = ( error as unknown ).statusCode ?? httpStatus.BAD_REQUEST;
     }
-    // 🔴 unknownn error fallback
+    // unknown error fallback
     else
     {
         message = "unknownn error";
     }
 
     // error response payload
-    const responsePayload: Record<string, unknown> = {
-        name: ( error as unknown ).name || "unknownnError",
+    const responsePayload: ErrorResponsePayload = {
+        name: ( error as unknown ).name || "unknownError",
         message,
         status: statusCode,
         success: false,
