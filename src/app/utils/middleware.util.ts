@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
 
 export const isZodError = ( error: unknown ): error is { issues: unknown[] } =>
@@ -26,4 +27,17 @@ export function parseZodError(error: unknown): ParsedZodIssue[] {
   }
 
   return issues;
+};
+
+export const generateToken = ( payload: unknown, secret: string, options?: jwt.SignOptions ) =>
+{
+  return jwt.sign( payload, secret, options );
+};
+
+export const verifyToken = ( token: string, secret: string ) =>
+{
+
+  const verifiedToken = jwt.verify( token, secret );
+
+  return verifiedToken
 };

@@ -6,11 +6,13 @@ export const createUserZodSchema = z.object( {
         .string( { invalid_type_error: "Name must be string" } )
         .min( 2, { message: "Name must be at least 2 characters long." } )
         .max( 50, { message: "Name cannot exceed 50 characters." } ),
+
     email: z
         .string( { invalid_type_error: "Email must be string" } )
         .email( { message: "Invalid email address format." } )
         .min( 5, { message: "Email must be at least 5 characters long." } )
         .max( 100, { message: "Email cannot exceed 100 characters." } ),
+
     password: z
         .string( { invalid_type_error: "Password must be string" } )
         .min( 8, { message: "Password must be at least 8 characters long." } )
@@ -23,16 +25,50 @@ export const createUserZodSchema = z.object( {
         .regex( /^(?=.*\d)/, {
             message: "Password must contain at least 1 number.",
         } ),
+
     phone: z
         .string( { invalid_type_error: "Phone Number must be string" } )
         .regex( /^(?:\+8801\d{9}|01\d{9})$/, {
             message: "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX or 01XXXXXXXXX",
         } )
         .optional(),
+
     address: z
         .string( { invalid_type_error: "Address must be string" } )
         .max( 200, { message: "Address cannot exceed 200 characters." } )
-        .optional()
+        .optional(),
+
+    role: z
+        .string()
+        .transform( ( val ) => val.toUpperCase() )
+        .refine( ( val ) => [ Role.ADMIN, Role.USER, Role.SUPER_ADMIN ].includes( val as Role ), {
+            message: "Role must be either 'ADMIN', 'USER', or 'SUPER_ADMIN'.",
+        } )
+        .optional(),
+
+    picture: z
+        .string( { invalid_type_error: "Picture must be string" } )
+        .url( { message: "Picture must be a valid URL." } )
+        .optional(),
+
+    isDeleted: z.boolean().optional(),
+
+    isActive: z
+        .enum( [ IsActive.ACTIVE, IsActive.INACTIVE ], {
+            errorMap: () => ( { message: "isActive must be either 'ACTIVE' or 'INACTIVE'." } ),
+        } )
+        .optional(),
+
+    isVerified: z.boolean().optional(),
+
+    auths: z
+        .array(
+            z.object( {
+                provider: z.string(),
+                providerId: z.string(),
+            } )
+        )
+        .optional(),
 } );
 
 export const updateUserZodSchema = z.object( {
@@ -59,8 +95,11 @@ export const updateUserZodSchema = z.object( {
         } )
         .optional(),
     role: z
-        // .enum(["ADMIN", "GUIDE", "USER", "SUPER_ADMIN"])
-        .enum( Object.values( Role ) as [ string ] )
+        .string()
+        .transform( ( val ) => val.toUpperCase() )
+        .refine( ( val ) => [ Role.ADMIN, Role.USER, Role.SUPER_ADMIN ].includes( val as Role ), {
+            message: "Role must be either 'ADMIN', 'USER', or 'SUPER_ADMIN'.",
+        } )
         .optional(),
     isActive: z
         .enum( Object.values( IsActive ) as [ string ] )
@@ -75,4 +114,9 @@ export const updateUserZodSchema = z.object( {
         .string( { invalid_type_error: "Address must be string" } )
         .max( 200, { message: "Address cannot exceed 200 characters." } )
         .optional()
-} );
+} ).refine(
+    ( data ) => Object.keys( data ).some( ( key ) => data[ key as keyof typeof data ] !== undefined ),
+    {
+        message: "At least one field must be provided for update",
+    }
+);
