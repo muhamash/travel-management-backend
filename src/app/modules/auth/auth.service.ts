@@ -9,6 +9,7 @@ import { User } from "../user/user.model";
 export const credentialLoginService = async(payload: Partial<IUser>) =>
 {
 
+    // console.log(payload)
     const { email, password } = payload;
     const isUser = await User.findOne( { email } );
     
@@ -31,14 +32,15 @@ export const credentialLoginService = async(payload: Partial<IUser>) =>
             //     expiresIn: "5m"
             // } );
             const accessToken = await generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET as string, {
-                expiresIn: 300
+                expiresIn: 3000
             } );
 
             return {
                 email,
                 accessToken,
                 userId: isUser.id,
-                expiresIn: '5m'
+                expiresIn: '5m',
+                type: isUser.role
             }
         }
         else
