@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { responseFunction } from "../../utils/response.util";
 import { asyncHandler } from "../../utils/service.util";
-import { createUserService, getAllUsersService } from "./user.service";
+import { createUserService, getAllUsersService, updatedUserService } from "./user.service";
 
 export const createUser = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
@@ -69,3 +69,34 @@ export const getAllUsers = asyncHandler( async ( req: Request, res: Response, ne
     } );
 } );
 
+export const updateUser = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    // console.log(req.params.id)
+    const verifyToken = req?.user;
+    // console.log( verifyToken );
+
+    const user = await updatedUserService( req.params.id, req.body, verifyToken );
+
+    if ( !user )
+    {
+        responseFunction( res, {
+            message: `Something went wrong when updating the user`,
+            statusCode: httpStatus.EXPECTATION_FAILED,
+            data: null,
+        } );
+
+        return;
+    }
+    if ( user )
+    {
+        responseFunction( res, {
+            message: `User updated!!`,
+            statusCode: httpStatus.ACCEPTED,
+            data: user,
+        } );
+    }
+    else
+    {
+        next()
+    }
+} );

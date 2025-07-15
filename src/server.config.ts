@@ -1,8 +1,9 @@
 import { Server } from "http";
 
-let server: Server;
-
-export function shutdown(reason: unknown, error?: Error | unknown) {
+export function shutdown ( reason: unknown, error?: Error | unknown )
+{
+    let server: Server;
+    
     console.error(`[${new Date().toISOString()}] ${reason}. Server is shutting down!`, error || "");
 
     if ( server ) 
