@@ -1,11 +1,11 @@
-# POST http://localhost:3000/api/v1/user/register
-# Content-Type: application/json
+POST http://localhost:3000/api/v1/user/register
+Content-Type: application/json
 
-# {
-#     "name": "superTwo",
-#     "email": "suxpexxrTwo@admin.ash",
-#     "password":"A@12345678"
-# }
+{
+    "name": "superTwo",
+    "email": "suxpssTwsdo@admin.ashs",
+    "password":"A@12345678"
+}
 
 # {
 #     "name": "admin",
