@@ -1,5 +1,7 @@
+import httpStatus from 'http-status-codes';
 import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
+import { AppError } from "../config/errors/App.error";
 import { Role } from "../modules/user/user.interface";
 
 export const isZodError = ( error: unknown ): error is { issues: unknown[] } =>
@@ -30,7 +32,7 @@ export function parseZodError(error: unknown): unknown[] {
   return issues;
 };
 
-export const generateToken = ( payload: unknown, secret: string, options?: jwt.SignOptions ) =>
+export const generateToken = ( payload: unknown, secret: string, options?: jwt.SignOptions ) : string =>
 {
   return jwt.sign( payload as unknown, secret, options );
 };
@@ -40,7 +42,14 @@ export const verifyToken = ( token: string, secret: string ) =>
 
   const verifiedToken = jwt.verify( token, secret );
 
-  return verifiedToken
+  if ( verifiedToken )
+  {
+    return verifiedToken
+  }
+  else
+  {
+    throw new AppError(httpStatus.BAD_REQUEST, `Error in verify token`)
+  }
 };
 
 export const isAllowedToUpdate = ( currentRole: string, currentUserId: string, targetRole: string, targetUserId: string ) =>

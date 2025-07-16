@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+import { envStrings } from "../config/env.config";
+import { IUser } from "../modules/user/user.interface";
+import { generateToken } from "./middleware.util";
 import { AsyncHandlerType } from "./utils.type";
 
-export const asyncHandler = ( fn: AsyncHandlerType ) => ( req: Request, res: Response, next: NextFunction ) =>
+export const asyncHandler = ( fn: AsyncHandlerType ) => ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
     Promise.resolve( fn( req, res, next ) ).catch( ( error: unknown ) =>
     {
@@ -9,4 +12,32 @@ export const asyncHandler = ( fn: AsyncHandlerType ) => ( req: Request, res: Res
 
         next(error)
     });
+};
+
+export const userTokens = async ( user: Partial<IUser>, next: NextFunction ) =>
+{
+    const jwtPayload = {
+        userId: user.id,
+        email: user.email,
+        password: user.password,
+        role: user.role
+    };
+
+    try
+    {
+        const accessToken =  generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET as string, {
+            expiresIn: 300000
+        } );
+
+        const refreshToken = generateToken( jwtPayload, envStrings.REFRESH_TOKEN_SECRET as string )
+
+        return {
+            accessToken,
+            refreshToken
+        }
+    }
+    catch ( error: unknown )
+    {
+        next( error )
+    }
 };

@@ -11,9 +11,9 @@ export const checkUpdatePermission = async (
 ) =>
 {
     // console.log("calling the middleware")
-    const currentRole = req.user.role;
-    const currentUserId = req.user.userId;
-    const targetUserId = req.params.id;
+    const currentRole = req.user.role as string;
+    const currentUserId = req.user.userId as string;
+    const targetUserId = req.params.id as string;
 
     // Find target user
     const targetUser = await User.findById( targetUserId );

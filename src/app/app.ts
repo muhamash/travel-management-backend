@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application } from "express";
 import { globalErrorResponse } from "./middleware/globalError.middleware";
@@ -7,6 +8,7 @@ import { firstVersionRouter } from "./routes/index.route";
 
 const app: Application = express();
 
+app.use( cookieParser() );
 app.use( express.json() )
 app.use( cors() )
 

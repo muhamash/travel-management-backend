@@ -6,8 +6,10 @@ dotenv.config();
 export const envStrings: EnvString = {
     PORT: process.env.PORT,
     DB_URL: process.env.DB_URL,
-    NODE_ENV: process.env.NODE_ENV,
+    NODE_ENV: process.env.NODE_ENV as "development" | "production",
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET: process.env.REFERSH_TOKEN_SECRET,
-    BCRYPT_SALT: process.env.BCRYPT_SALT
+    BCRYPT_SALT: process.env.BCRYPT_SALT,
+    ACCESS_TOKEN_EXPIRE: process.env.REFERSH_TOKEN_EXPIRE_TIME,
+    REFRESH_TOKEN_EXPIRE: process.env.REFERSH_TOKEN_EXPIRE_TIME
 };

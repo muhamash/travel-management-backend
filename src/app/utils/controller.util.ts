@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { TResponse } from "./utils.type";
 
 export const responseFunction = <T> ( res: Request, data: TResponse<T> ) =>
@@ -8,5 +8,14 @@ export const responseFunction = <T> ( res: Request, data: TResponse<T> ) =>
         statusCode: data.statusCode,
         meta: data.meta,
         data: data.data
+    } );
+}
+
+export const setCookie = async (res: Response, cookieName: string, cookieData, maxAge: number): Promise<void> =>
+{
+    res.cookie( cookieName, cookieData, {
+        httpOnly: true,
+        secure: false,
+        maxAge
     } );
 }

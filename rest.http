@@ -2,8 +2,8 @@
 # Content-Type: application/json
 
 # {
-#     "name": "user",
-#     "email": "user@admin.ash",
+#     "name": "superTwo",
+#     "email": "suxpexxrTwo@admin.ash",
 #     "password":"A@12345678"
 # }
 
@@ -23,7 +23,7 @@
 
 # GET http://localhost:3000/api/v1/user/getAll
 # Content-Type: application/json
-# Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc2MmJiNDdmYmQ3YzM1Y2IzY2JhNDYiLCJlbWFpbCI6InVzZXJAYWRtaW4uYXNoIiwicGFzc3dvcmQiOiIkMmIkMTAkcXRNNERTemRqQXZlMWY1Ulp5YWFULko2QUZkYVFuY2dCTlp1UVFNTDdpNnJweWJsOU1GUUsiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1MjU3NDk3MSwiZXhwIjoxNzUyNTc1MjcxfQ.SWwWPAB4qDiPTdeBa4Cm0YVyfdSyOnJK-hJpyqYR8Iw
+
 
 # POST http://localhost:3000/api/v1/auth/login
 # Content-Type: application/json
@@ -34,10 +34,14 @@
 # }
 
 
-PATCH http://localhost:3000/api/v1/user/update/68762bb47fbd7c35cb3cba46
-Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc2MmI5ZjdmYmQ3YzM1Y2IzY2JhNDQiLCJlbWFpbCI6ImFkbWluQGFkbWluLmFzaCIsInBhc3N3b3JkIjoiJDJiJDEwJHQwVWxYUFhoNXVKd0xITVFHLlN2VU9hQldRZS81bVlLN0tmWkVEUVI1aU5ieGVZLkZNdzkuIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUyNjczMTEwLCJleHAiOjE3NTI5NzMxMTB9.Uz-4qfpNT2FHglJntSsfwimWrT3LCgxVvzE9ws98dN0
+# PATCH http://localhost:3000/api/v1/user/update/6877c51ef347f6cfd895e245
+# Content-Type: application/json
+# Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc2MmI5ZjdmYmQ3YzM1Y2IzY2JhNDQiLCJlbWFpbCI6ImFkbWluQGFkbWluLmFzaCIsInBhc3N3b3JkIjoiJDJiJDEwJHQwVWxYUFhoNXVKd0xITVFHLlN2VU9hQldRZS81bVlLN0tmWkVEUVI1aU5ieGVZLkZNdzkuIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUyNjczMTEwLCJleHAiOjE3NTI5NzMxMTB9.Uz-4qfpNT2FHglJntSsfwimWrT3LCgxVvzE9ws98dN0
 
-{
-    "name": "admin cann update only its info"
-}
+# {
+#     "name": "admin can update info"
+# }
+
+POST http://localhost:3000/api/v1/auth/refresh-token
+Content-Type: application/json
+# Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc2MmI5ZjdmYmQ3YzM1Y2IzY2JhNDQiLCJlbWFpbCI6ImFkbWluQGFkbWluLmFzaCIsInBhc3N3b3JkIjoiJDJiJDEwJHQwVWxYUFhoNXVKd0xITVFHLlN2VU9hQldRZS81bVlLN0tmWkVEUVI1aU5ieGVZLkZNdzkuIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzUyNjk0NjM5fQ.8edsJfCWHoyKi6usIyduOdcsyglOobNehl-CdkG4Kn4
