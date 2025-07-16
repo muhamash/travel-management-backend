@@ -8,7 +8,8 @@ export const checkAuth = ( ...authRoles: string[] ) => async ( req: Request, res
 {
     try
     {
-        const accessToken = req.headers.authorization;
+        const accessToken = req.cookies.accessToken;
+        // console.log(accessToken)
 
         if ( !accessToken )
         {
@@ -17,7 +18,7 @@ export const checkAuth = ( ...authRoles: string[] ) => async ( req: Request, res
 
         const verifiedToken = verifyToken( accessToken, envStrings.ACCESS_TOKEN_SECRET ) as JwtPayload;
 
-        console.log( verifiedToken );
+        // console.log( verifiedToken );
 
         if ( !authRoles.includes( verifiedToken.role ) )
         {

@@ -2,54 +2,79 @@ import bcrypt from "bcryptjs";
 import httpStatus from 'http-status-codes';
 import { envStrings } from "../../config/env.config";
 import { AppError } from "../../config/errors/App.error";
-import { generateToken } from "../../utils/middleware.util";
-import { IUser } from "../user/user.interface";
+import { generateToken, verifyToken } from "../../utils/middleware.util";
+import { userTokens } from "../../utils/service.util";
+import { IsActive, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 
-export const credentialLoginService = async(payload: Partial<IUser>) =>
+export const credentialLoginService = async ( payload: Partial<IUser> ) =>
 {
-
-    // console.log(payload)
     const { email, password } = payload;
-    const isUser = await User.findOne( { email } );
-    
-    if ( isUser )
-    {
-        // console.log(isUser)
-        const isPassMatch = await bcrypt.compare( password as string, isUser.password as string );
 
-        if ( isPassMatch )
-        {
-            const jwtPayload = {
-                userId: isUser.id,
-                email: isUser.email,
-                password: isUser.password,
-                role: isUser.role
-            }
+    const isUser = await User.findOne( { email } ).lean();
 
-            // console.log(isUser)
-            // const accessToken = await jwt.sign( jwtPayload, envStrings.ACCESS_TOKEN_SECRET as string, {
-            //     expiresIn: "5m"
-            // } );
-            const accessToken = await generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET as string, {
-                expiresIn: 300000
-            } );
-
-            return {
-                email,
-                accessToken,
-                userId: isUser.id,
-                expiresIn: 300000,
-                type: isUser.role
-            }
-        }
-        else
-        {
-            throw new AppError( httpStatus.BAD_REQUEST, "Wrong password!!" );
-        }
-    }
-    else
+    if ( !isUser )
     {
         throw new AppError( httpStatus.NOT_FOUND, "User not found!!" );
     }
-}
+
+    const isPassMatch = await bcrypt.compare( password as string, isUser.password as string );
+
+    if ( !isPassMatch )
+    {
+        throw new AppError( httpStatus.BAD_REQUEST, "Wrong password!!" );
+    }
+
+    delete isUser.password;
+
+    const { accessToken, refreshToken } = await userTokens( isUser );
+
+    return {
+        email,
+        accessToken,
+        refreshToken,
+        userId: isUser._id,
+        expiresIn: 300000,
+        user: isUser,
+    };
+};
+
+export const getNewTokenService = async ( refreshToken: string ) =>
+{
+    const verifyRefreshToken = verifyToken( refreshToken, envStrings.REFRESH_TOKEN_SECRET );
+
+    // console
+
+    const user = await User.findOne( { email: verifyRefreshToken.email } );
+
+    if ( !user )
+    {
+        throw new AppError( httpStatus.NOT_FOUND, "User not found!!" );
+    }
+
+    if ( !user?.isDeleted && user?.isActive === IsActive.ACTIVE )
+    {
+        const jwtPayload = {
+            userId: user.id,
+            email: user.email,
+            password: user.password,
+            role: user.role
+        };
+        // console.log( verifyRefreshToken, user )
+    
+        if ( verifyRefreshToken )
+        {
+            const newAccessToken = generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET );
+        
+            return newAccessToken;
+        }
+        else
+        {
+            throw new AppError( httpStatus.CONFLICT, "Error in new token service!!" )
+        }
+    } else
+    {
+        throw new AppError( httpStatus.FORBIDDEN, "User is restricted!!!" )
+    }
+
+};
