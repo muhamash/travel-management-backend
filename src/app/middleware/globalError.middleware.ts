@@ -21,9 +21,11 @@ export const globalErrorResponse = (
     {
         const fieldIssues = parseZodError( error );
 
+        // console.log(error.issues)
+
         message = fieldIssues.length
             ? `Validation error on field '${ fieldIssues[ 0 ].field }': ${ fieldIssues[ 0 ].message }`
-            : "Validation error";
+            : error?.issues[0]?.message || "Validation error!!!";
 
         const responsePayload = {
             name: error.name || "ZodError",

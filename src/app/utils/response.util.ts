@@ -5,7 +5,7 @@ export const responseFunction = <T> ( res: Request, data: TResponse<T> ) =>
 {
     res.status( data.statusCode ).json( {
         message: data.message,
-        status: data.statusCode,
+        statusCode: data.statusCode,
         meta: data.meta,
         data: data.data
     } );
