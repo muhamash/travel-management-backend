@@ -14,11 +14,12 @@ export const createUserService = async(payload : Partial<IUser>) =>
         provider: "credentials",
         providerId: email as string
     }
-    const user = await User.create( { email, auths: [provider], password: hashedPass, ...rest } );
+    const user = await User.create( { email, auths: [ provider ], password: hashedPass, ...rest } );
+    
+    const createdUser = user.toObject();
+    delete createdUser.password;
 
-    // console.log( "created a user: ", user, password, hashedPass );
-
-    return user
+    return createdUser;
 }
 
 export const getAllUsersService = async (): IUser[] => 
