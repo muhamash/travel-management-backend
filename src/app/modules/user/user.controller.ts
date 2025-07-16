@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
-import { responseFunction } from "../../utils/response.util";
+import { responseFunction } from "../../utils/controller.util";
 import { asyncHandler } from "../../utils/service.util";
 import { createUserService, getAllUsersService, updatedUserService } from "./user.service";
 
@@ -73,7 +73,7 @@ export const updateUser = asyncHandler( async ( req: Request, res: Response, nex
 {
     // console.log(req.params.id)
     // const targetUser = req?.targetUser;
-    console.log( targetUser );
+    // console.log( targetUser );
 
     const user = await updatedUserService( req.params.id, req.body );
 
