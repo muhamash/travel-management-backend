@@ -1,4 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
+import { IUser } from '../modules/user/user.interface';
 
 declare global
 {
@@ -7,6 +8,7 @@ declare global
         interface Request
         {
             user: JwtPayload;
+            targetUser?: IUser;
         }
     }
 }

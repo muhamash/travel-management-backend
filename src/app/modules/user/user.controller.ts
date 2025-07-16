@@ -72,10 +72,10 @@ export const getAllUsers = asyncHandler( async ( req: Request, res: Response, ne
 export const updateUser = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
     // console.log(req.params.id)
-    const verifyToken = req?.user;
-    // console.log( verifyToken );
+    // const targetUser = req?.targetUser;
+    console.log( targetUser );
 
-    const user = await updatedUserService( req.params.id, req.body, verifyToken );
+    const user = await updatedUserService( req.params.id, req.body );
 
     if ( !user )
     {

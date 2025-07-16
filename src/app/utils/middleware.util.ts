@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
+import { Role } from "../modules/user/user.interface";
 
 export const isZodError = ( error: unknown ): error is { issues: unknown[] } =>
 {
@@ -40,4 +41,36 @@ export const verifyToken = ( token: string, secret: string ) =>
   const verifiedToken = jwt.verify( token, secret );
 
   return verifiedToken
+};
+
+export const isAllowedToUpdate = ( currentRole: string, currentUserId: string, targetRole: string, targetUserId: string ) =>
+{
+  if ( currentRole === Role.SUPER_ADMIN )
+  {
+    if ( targetRole === Role.SUPER_ADMIN && currentUserId !== targetUserId )
+    {
+      return false;
+    }
+    return true;
+  }
+
+  if ( currentRole === Role.ADMIN )
+  {
+    if ( currentUserId === targetUserId )
+    {
+      return true;
+    }
+    if ( targetRole === Role.ADMIN || targetRole === Role.SUPER_ADMIN )
+    {
+      return false;
+    }
+    return true;
+  }
+
+  if ( [ Role.USER, Role.GUIDE ].includes( currentRole ) )
+  {
+    return currentUserId === targetUserId;
+  }
+
+  return false;
 };
