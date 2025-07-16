@@ -1,6 +1,4 @@
 import bcrypt from "bcryptjs";
-import httpStatus from 'http-status-codes';
-import { AppError } from "../../config/errors/App.error";
 import { IAuthProvider, IUser } from './user.interface';
 import { User } from "./user.model";
 
@@ -32,21 +30,11 @@ export const getAllUsersService = async (): IUser[] =>
 
 export const updatedUserService = async ( userId: string, payload: Partial<IUser> ) =>
 {
-    const isUser = await User.findById( userId )
-
-    if ( !isUser )
-    {
-        throw new AppError( httpStatus.NOT_FOUND, `User not found!!` )
-    }
 
     if ( payload.password )
     {
         payload.password = await bcrypt.hash( payload.password, "10" );
     }
-
-    // const userRole = decodedToken.role;
-
-    // console.log( "from user update service", payload, decodedToken, userId, isUser );
 
     const newUpdatedUser = await User.findByIdAndUpdate( userId, payload, { new: true, runValidators: true } );
 
