@@ -32,14 +32,14 @@ export const credentialLoginService = async(payload: Partial<IUser>) =>
             //     expiresIn: "5m"
             // } );
             const accessToken = await generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET as string, {
-                expiresIn: 3000
+                expiresIn: 300000
             } );
 
             return {
                 email,
                 accessToken,
                 userId: isUser.id,
-                expiresIn: '5m',
+                expiresIn: 300000,
                 type: isUser.role
             }
         }
