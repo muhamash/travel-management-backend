@@ -95,3 +95,31 @@ export const getNewAccessToken = asyncHandler( async ( req: Request, res: Respon
         next()
     }
 } );
+
+export const logout = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    try
+    {
+        res.clearCookie( "accessToken", {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false
+        } );
+    
+        res.clearCookie( "refreshToken", {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false
+        } );
+    
+        responseFunction( res, {
+            message: "Logged out!!",
+            statusCode: httpStatus.OK,
+            data: null
+        } )
+    }
+    catch ( error: unknown )
+    {
+        next( error )
+    }
+} );

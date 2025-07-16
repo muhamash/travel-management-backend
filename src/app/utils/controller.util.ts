@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { TResponse } from "./utils.type";
 
-export const responseFunction = <T> ( res: Request, data: TResponse<T> ) =>
+export const responseFunction = <T> ( res: Request, data?: TResponse<T> ) =>
 {
     res.status( data.statusCode ).json( {
         message: data.message,
