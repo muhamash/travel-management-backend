@@ -7,6 +7,7 @@ import { credentialLoginService } from "./auth.service";
 
 export const authLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
+    // console.log(req.body)
     const user = await credentialLoginService( req.body );
 
     if ( !user )
