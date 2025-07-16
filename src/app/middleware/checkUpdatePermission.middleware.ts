@@ -17,7 +17,7 @@ export const checkUpdatePermission = async (
 
     // Find target user
     const targetUser = await User.findById( targetUserId );
-       console.log("target user", targetUser)
+    console.log( "target user", targetUser );
     if ( !targetUser )
     {
         throw new AppError( httpStatus.NOT_FOUND, "User not found!" );
