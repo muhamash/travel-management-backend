@@ -18,7 +18,6 @@ app.get( "/", homeController );
 // actual business route
 app.use( "/api/v1", firstVersionRouter )
 
-
 // global not found route
 app.use( globalNotFoundResponse );
 // global error response

@@ -1,55 +1,56 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Server } from "http";
+import httpStatus from 'http-status-codes';
 import app from "./app/app";
 import { envStrings } from "./app/config/env.config";
+import { AppError } from "./app/config/errors/App.error";
 import { dbConnect } from "./app/config/mongoose.config";
-import { shutdown } from "./server.config";
-
-let server: Server;
 
 const startServer = async() =>
 {
     try 
     {
+
         await dbConnect()
         
-        server = app.listen( envStrings.PORT, () =>
+        const server : Server = app.listen( envStrings.PORT, () =>
         {
-            console.log( `Server is listening at port : ${envStrings.PORT}` );
+            console.log( `Server is listening at port : ${envStrings.PORT} 😁` );
             console.log(`Server entry : http://localhost:${envStrings.PORT} 🛜`)
         })
     }
-    catch ( error )
+    catch ( error: unknown )
     {
         console.log( error );
-        return
+
+        throw new AppError(httpStatus.BAD_GATEWAY, "Server connection failed!")
     }
 }
 
 startServer();
 
-process.on( "unhandledRejection", ( reason: unknown, promise: Promise<never> ) =>
-{
-    // const value = await promise;
-    // console.log( value )
+// process.on( "unhandledRejection", ( reason: unknown, promise: Promise<never> ) =>
+// {
+//     // const value = await promise;
+//     // console.log( value )
     
-    shutdown( "Unhandled Rejection", reason );
-});
+//     shutdown( "Unhandled Rejection", reason );
+// });
 
-process.on( "uncaughtException", ( error: Error ) =>
-{
-    shutdown( "Uncaught Exception", error );
-} );
+// process.on( "uncaughtException", ( error: Error ) =>
+// {
+//     shutdown( "Uncaught Exception", error );
+// } );
 
-process.on( "SIGTERM", () =>
-{
-    shutdown( "SIGTERM Signal" );
-} );
+// process.on( "SIGTERM", () =>
+// {
+//     shutdown( "SIGTERM Signal" );
+// } );
 
-process.on( "SIGINT", () =>
-{
-    shutdown( "SIGINT Signal" );
-} );
+// process.on( "SIGINT", () =>
+// {
+//     shutdown( "SIGINT Signal" );
+// } );
 
 // unhandled rejection!
 // uncaught rejection!!

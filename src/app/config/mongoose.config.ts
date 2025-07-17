@@ -1,8 +1,11 @@
+import httpStatus from 'http-status-codes';
 import mongoose from "mongoose";
 import { envStrings } from "./env.config";
+import { AppError } from "./errors/App.error";
 
 export const dbConnect = async () : Promise<void> =>
 {
+
     try {
         await mongoose.connect( envStrings.DB_URL );
         
@@ -11,6 +14,6 @@ export const dbConnect = async () : Promise<void> =>
     catch ( error : unknown )
     {
         console.log(error)
-        throw new Error(error)
+        throw new AppError( httpStatus.BAD_GATEWAY, error );
     }    
 }

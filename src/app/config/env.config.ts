@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { EnvString } from "./config.types";
+import { EnvString } from "./types.config";
 
 dotenv.config();
 
@@ -10,6 +10,6 @@ export const envStrings: EnvString = {
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET: process.env.REFERSH_TOKEN_SECRET,
     BCRYPT_SALT: process.env.BCRYPT_SALT,
-    ACCESS_TOKEN_EXPIRE: process.env.REFERSH_TOKEN_EXPIRE_TIME,
+    ACCESS_TOKEN_EXPIRE: process.env.ACCESS_TOKEN_EXPIRE_TIME,
     REFRESH_TOKEN_EXPIRE: process.env.REFERSH_TOKEN_EXPIRE_TIME
 };

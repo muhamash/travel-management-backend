@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs";
 import httpStatus from 'http-status-codes';
+import { JwtPayload } from "jsonwebtoken";
 import { envStrings } from "../../config/env.config";
 import { AppError } from "../../config/errors/App.error";
-import { generateToken, verifyToken } from "../../utils/middleware.util";
+import { verifyToken } from "../../utils/middleware.util";
 import { userTokens } from "../../utils/service.util";
 import { IsActive, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
@@ -54,19 +55,13 @@ export const getNewTokenService = async ( refreshToken: string ) =>
 
     if ( !user?.isDeleted && user?.isActive === IsActive.ACTIVE )
     {
-        const jwtPayload = {
-            userId: user.id,
-            email: user.email,
-            password: user.password,
-            role: user.role
-        };
         // console.log( verifyRefreshToken, user )
     
         if ( verifyRefreshToken )
         {
-            const newAccessToken = generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET );
+            const { accessToken, refreshToken } = await userTokens( user );
         
-            return newAccessToken;
+            return { accessToken, refreshToken }
         }
         else
         {
@@ -77,4 +72,21 @@ export const getNewTokenService = async ( refreshToken: string ) =>
         throw new AppError( httpStatus.FORBIDDEN, "User is restricted!!!" )
     }
 
+};
+
+export const resetPasswordService = async ( oldPass: string, newPass: string, decodedToken: JwtPayload ) =>
+{
+    const user = await User.findById( decodedToken.userId );
+    
+    // console.log( user, newPass, oldPass, decodedToken );
+    const isOldPassMatch = await bcrypt.compare( oldPass, user?.password as string );
+
+    if ( !isOldPassMatch )
+    {
+        throw new AppError( httpStatus.EXPECTATION_FAILED, `Old password doest match` );
+    }
+
+    user?.password = await bcrypt.hash( newPass, Number(envStrings.BCRYPT_SALT) );
+
+    return user?.save();
 };
