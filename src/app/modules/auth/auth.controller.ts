@@ -1,10 +1,46 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
+import passport from "passport";
 import { AppError } from "../../config/errors/App.error";
 import { responseFunction, setCookie } from "../../utils/controller.util";
-import { asyncHandler } from "../../utils/service.util";
+import { asyncHandler, userTokens } from "../../utils/service.util";
 import { credentialLoginService, getNewTokenService, resetPasswordService } from './auth.service';
+
+// google login
+export const googleAuthLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+
+} );
+// google call back
+export const googleAuthCallback = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const user = req.user;
+    console.log( user, "google callback" );
+
+    if ( !user )
+    {
+        throw new AppError( httpStatus.BAD_REQUEST, "Unable to get the user" );
+    }
+    
+    const loginData = await userTokens( user );
+
+    try
+    {
+        await setCookie( res, "refreshToken", loginData.refreshToken, 240 * 60 * 60 * 1000 );
+
+        await setCookie( res, "accessToken", loginData.accessToken, 100 * 60 * 1000 );
+    }
+    catch ( error: unknown )
+    {
+        next( error )
+    }
+
+    res.redirect("http://localhost:3000")
+
+} );
+
 
 
 export const authLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
