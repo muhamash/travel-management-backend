@@ -120,3 +120,19 @@ export const updateUserZodSchema = z.object( {
         message: "At least one field must be provided for update",
     }
 );
+
+export const updatePassZodSchema = z.object( {
+    newPassword: z
+        .string( { invalid_type_error: "Password must be string" } )
+        .min( 8, { message: "Password must be at least 8 characters long." } )
+        .regex(
+            /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).+$/,
+            {
+                message:
+                    "Password must contain at least 1 uppercase letter, 1 number, and 1 special character.",
+            }
+        ),
+    oldPassword: z
+        .string( { invalid_type_error: "Password must be string" } )
+        .min( 8, { message: "Password must be at least 8 characters long." } ),
+} );
