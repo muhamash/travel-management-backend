@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import httpStatus from 'http-status-codes';
+import { JwtPayload } from "jsonwebtoken";
 import { envStrings } from "../../config/env.config";
 import { AppError } from "../../config/errors/App.error";
 import { verifyToken } from "../../utils/middleware.util";
@@ -71,4 +72,21 @@ export const getNewTokenService = async ( refreshToken: string ) =>
         throw new AppError( httpStatus.FORBIDDEN, "User is restricted!!!" )
     }
 
+};
+
+export const resetPasswordService = async ( oldPass: string, newPass: string, decodedToken: JwtPayload ) =>
+{
+    const user = await User.findById( decodedToken.userId );
+    
+    // console.log( user, newPass, oldPass, decodedToken );
+    const isOldPassMatch = await bcrypt.compare( oldPass, user?.password as string );
+
+    if ( !isOldPassMatch )
+    {
+        throw new AppError( httpStatus.EXPECTATION_FAILED, `Old password doest match` );
+    }
+
+    user?.password = await bcrypt.hash( newPass, Number(envStrings.BCRYPT_SALT) );
+
+    return user?.save();
 };

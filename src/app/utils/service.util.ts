@@ -17,11 +17,13 @@ export const asyncHandler = ( fn: AsyncHandlerType ) => ( req: Request, res: Res
 export const userTokens = async ( user: Partial<IUser>, next: NextFunction ) =>
 {
     const jwtPayload = {
-        userId: user.id,
+        userId: user._id,
         email: user.email,
-        password: user.password,
-        role: user.role
+        role: user.role,
+        name: user.name
     };
+
+    // console.log(jwtPayload, user)
 
     try
     {
