@@ -26,10 +26,12 @@ export const userTokens = async ( user: Partial<IUser>, next: NextFunction ) =>
     try
     {
         const accessToken =  generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET as string, {
-            expiresIn: 300000
+            expiresIn: envStrings.ACCESS_TOKEN_EXPIRE
         } );
 
-        const refreshToken = generateToken( jwtPayload, envStrings.REFRESH_TOKEN_SECRET as string )
+        const refreshToken = generateToken( jwtPayload, envStrings.REFRESH_TOKEN_SECRET as string, {
+            expiresIn: envStrings.REFRESH_TOKEN_EXPIRE
+        } );
 
         return {
             accessToken,

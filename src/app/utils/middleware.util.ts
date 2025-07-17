@@ -48,7 +48,7 @@ export const verifyToken = ( token: string, secret: string ) =>
   }
   else
   {
-    throw new AppError(httpStatus.BAD_REQUEST, `Error in verify token`)
+    throw new AppError( httpStatus.BAD_REQUEST, `Error in verify token` )
   }
 };
 
