@@ -26,9 +26,9 @@ export const authLogin = asyncHandler( async ( req: Request, res: Response, next
 
         try
         {
-            await setCookie( res, "refreshToken", loginData.refreshToken, 100 * 24 * 60 * 60 * 1000 );
+            await setCookie( res, "refreshToken", loginData.refreshToken, 24 * 60 * 60 * 1000 );
 
-            await setCookie( res, "accessToken", loginData.accessToken, 10 * 24 * 60 * 60 * 1000 );
+            await setCookie( res, "accessToken", loginData.accessToken, 10 * 60 * 1000 );
         }
         catch ( error: unknown )
         {
@@ -77,7 +77,9 @@ export const getNewAccessToken = asyncHandler( async ( req: Request, res: Respon
     {
         try {
 
-            await setCookie( res, "accessToken", tokenInfo, 10 * 24 * 60 * 60 * 1000 );
+            await setCookie( res, "accessToken", tokenInfo.accessToken, 10 * 60 * 1000 );
+            
+            await setCookie( res, "refreshToken", tokenInfo.refreshToken, 24 * 60 * 60 * 1000 );
         }
         catch ( error: unknown )
         {

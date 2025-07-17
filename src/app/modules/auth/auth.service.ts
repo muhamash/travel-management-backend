@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import httpStatus from 'http-status-codes';
 import { envStrings } from "../../config/env.config";
 import { AppError } from "../../config/errors/App.error";
-import { generateToken, verifyToken } from "../../utils/middleware.util";
+import { verifyToken } from "../../utils/middleware.util";
 import { userTokens } from "../../utils/service.util";
 import { IsActive, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
@@ -54,19 +54,13 @@ export const getNewTokenService = async ( refreshToken: string ) =>
 
     if ( !user?.isDeleted && user?.isActive === IsActive.ACTIVE )
     {
-        const jwtPayload = {
-            userId: user.id,
-            email: user.email,
-            password: user.password,
-            role: user.role
-        };
         // console.log( verifyRefreshToken, user )
     
         if ( verifyRefreshToken )
         {
-            const newAccessToken = generateToken( jwtPayload, envStrings.ACCESS_TOKEN_SECRET );
+            const { accessToken, refreshToken } = await userTokens( user );
         
-            return newAccessToken;
+            return { accessToken, refreshToken }
         }
         else
         {
