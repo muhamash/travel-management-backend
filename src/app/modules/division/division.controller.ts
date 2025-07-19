@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from 'http-status-codes';
 import { responseFunction } from "../../utils/controller.util";
 import { asyncHandler } from "../../utils/service.util";
-import { createDivisionService, getAllDivisionsService } from "./division.service";
+import { createDivisionService, deleteDivisionService, getAllDivisionsService, getDivisionByIdService, updateDivisionService } from "./division.service";
 
 export const createDivision = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
@@ -71,5 +71,121 @@ export const getAllDivisions = asyncHandler( async ( req: Request, res: Response
         statusCode: httpStatus.OK,
         meta: divisions.length ,
         data: divisions,
+    } );
+} );
+
+export const getDivisionById = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const divisionId = req.params.id;
+
+    if ( !divisionId )
+    {
+        responseFunction( res, {
+            message: `Division ID is required`,
+            statusCode: httpStatus.BAD_REQUEST,
+            data: null,
+        } );
+
+        return;
+    }
+
+    const division = await getDivisionByIdService( divisionId );
+    if ( !division )
+    {
+        responseFunction( res, {
+            message: `Division not found`,
+            statusCode: httpStatus.NOT_FOUND,
+            data: null,
+        } );
+
+        return;
+    }
+
+    responseFunction( res, {
+        message: `Division fetched successfully`,
+        statusCode: httpStatus.OK,
+        data: division,
+    } );
+} );
+
+export const updateDivision = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const divisionId = req.params.id;
+    const updateData = req.body;
+
+    if ( !divisionId )
+    {
+        responseFunction( res, {
+            message: `Division ID is required`,
+            statusCode: httpStatus.BAD_REQUEST,
+            data: null,
+        } );
+
+        return;
+    }
+
+    if ( !updateData.name || !updateData.slug )
+    {
+        responseFunction( res, {
+            message: `Name and slug are required for update`,
+            statusCode: httpStatus.EXPECTATION_FAILED,
+            data: null,
+        } );
+
+        return;
+    }
+
+    const updatedDivision = await updateDivisionService( divisionId, updateData );
+    
+    if ( !updatedDivision )
+    {
+        responseFunction( res, {
+            message: `Something went wrong when updating the division`,
+            statusCode: httpStatus.EXPECTATION_FAILED,
+            data: null,
+        } );
+
+        return;
+    }
+
+    responseFunction( res, {
+        message: `Division updated successfully`,
+        statusCode: httpStatus.OK,
+        data: updatedDivision,
+    } );
+} );
+
+export const deleteDivision = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const divisionId = req.params.id;
+
+    if ( !divisionId )
+    {
+        responseFunction( res, {
+            message: `Division ID is required`,
+            statusCode: httpStatus.BAD_REQUEST,
+            data: null,
+        } );
+
+        return;
+    }
+
+    const deletedDivision = await deleteDivisionService( divisionId );
+
+    if ( !deletedDivision )
+    {
+        responseFunction( res, {
+            message: `Division not found`,
+            statusCode: httpStatus.NOT_FOUND,
+            data: null,
+        } );
+
+        return;
+    }
+
+    responseFunction( res, {
+        message: `Division deleted successfully`,
+        statusCode: httpStatus.OK,
+        data: deletedDivision,
     } );
 } );

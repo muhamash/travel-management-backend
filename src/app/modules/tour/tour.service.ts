@@ -1,3 +1,5 @@
+import httpStatus from 'http-status-codes';
+import { AppError } from "../../config/errors/App.error";
 import { TourType } from "./tourType.model";
 
 export const createTourTypeService = async ( name: string ) =>
@@ -24,6 +26,11 @@ export const getTourTypeByIdService = async ( tourTypeId: string ) =>
 export const updateTourTypeService = async ( tourTypeId: string, name: string ) =>
 {
     const updatedTourType = await TourType.findByIdAndUpdate( tourTypeId, { name }, { new: true, runValidators: true } );
+
+    if ( !updatedTourType )
+    {
+        throw new AppError( httpStatus.NOT_FOUND, `Tour type with ID ${ tourTypeId } not found` );
+    }
 
 
     return updatedTourType;

@@ -90,5 +90,12 @@
 # }
 
 
-GET http://localhost:3000/api/v1/division
+GET  http://localhost:3000/api/v1/division
 Content-Type: application/json
+
+# {
+#     "name": "Sylhet",
+#     "slug": "dhaka-b",
+#     "description": "Capital city of Bangladesh",
+#     "thumbnail": "https://example.com/dhaka-thumbnail.jpg"
+# }

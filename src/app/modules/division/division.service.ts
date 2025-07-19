@@ -1,3 +1,5 @@
+import httpStatus from 'http-status-codes';
+import { AppError } from "../../config/errors/App.error";
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
 
@@ -13,4 +15,40 @@ export const getAllDivisionsService = async () =>
     const divisions = await Division.find();
 
     return divisions;
+}
+
+export const getDivisionByIdService = async ( divisionId: string ) =>
+{
+    const division = await Division.findById( divisionId ); 
+    if ( !division )
+    {
+        return null;
+    }
+
+    return division;
+}
+
+export const updateDivisionService = async ( divisionId: string, payload: Partial<IDivision> ) =>
+{
+    const division = await Division.findById( divisionId );
+    if ( !division )
+    {
+        throw new AppError(httpStatus.NOT_FOUND, `Division with ID ${ divisionId } not found` );
+    }
+
+    const updatedDivision = await Division.findByIdAndUpdate( divisionId, payload, { new: true, runValidators: true } );
+
+    return updatedDivision;
+}
+
+export const deleteDivisionService = async ( divisionId: string ) =>
+{
+    const deletedDivision = await Division.findByIdAndDelete( divisionId );
+
+    if ( !deletedDivision )
+    {
+        throw new AppError(httpStatus.NOT_FOUND, `Division with ID ${ divisionId } not found` );
+    }
+
+    return deletedDivision;
 }
