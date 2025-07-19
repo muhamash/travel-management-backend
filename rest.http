@@ -1,11 +1,11 @@
-POST http://localhost:3000/api/v1/user/register
-Content-Type: application/json
+# POST http://localhost:3000/api/v1/user/register
+# Content-Type: application/json
 
-{
-    "name": "superTwo",
-    "email": "sfasf@sfdsaf.com",
-    "password":"A@12345678"
-}
+# {
+#     "name": "superTwo",
+#     "email": "sfasf@sfdsaf.com",
+#     "password":"A@12345678"
+# }
 
 # {
 #     "name": "admin",
@@ -55,3 +55,40 @@ Content-Type: application/json
 #     "oldPassword":"A@12345678",
 #     "newPassword": "34534534@54A3"
 # }
+
+# POST  http://localhost:3000/api/v1/tour/create-tour-type
+# Content-Type: application/json
+
+# {
+#     "name": "sfsafsaf"
+# }
+
+# GET http://localhost:3000/api/v1/tour/tour-types
+# Content-Type: application/json
+
+# PATCH  http://localhost:3000/api/v1/tour/tour-types/687bf966c671a2fb861dbb8b
+# Content-Type: application/json
+
+# {
+#     "name": "edited"
+# }
+
+# GET http://localhost:3000/api/v1/tour/tour-types/687bf966c671a2fb861dbb8b
+# Content-Type: application/json
+
+# DELETE http://localhost:3000/api/v1/tour/tour-types/687c0051307c6b6b7104f051
+# Content-Type: application/json
+
+# POST http://localhost:3000/api/v1/division/create
+# Content-Type: application/json
+
+# {
+#     "name": "bosila",
+#     "slug": "dhaka-b",
+#     "description": "Capital city of Bangladesh",
+#     "thumbnail": "https://example.com/dhaka-thumbnail.jpg"
+# }
+
+
+GET http://localhost:3000/api/v1/division
+Content-Type: application/json

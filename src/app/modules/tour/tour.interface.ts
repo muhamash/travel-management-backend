@@ -18,6 +18,8 @@ export interface ITour {
     tourPlan?: string[];
     maxGuest?: number;
     minAge?: number;
+    tourist?: Types.ObjectId[];
+    host?: Types.ObjectId;
     division: Types.ObjectId
     tourType: Types.ObjectId
 }
