@@ -73,9 +73,9 @@ export const updateUser = asyncHandler( async ( req: Request, res: Response, nex
 {
     // console.log(req.params.id)
     // const targetUser = req?.targetUser;
-    // console.log( targetUser );
+    console.log("request user", req.user );
 
-    const user = await updatedUserService( req.params.id, req.body );
+    const user = await updatedUserService( req.params.id, req.body, req.user );
 
     if ( !user )
     {

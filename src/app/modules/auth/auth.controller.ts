@@ -5,19 +5,30 @@ import passport from "passport";
 import { AppError } from "../../config/errors/App.error";
 import { responseFunction, setCookie } from "../../utils/controller.util";
 import { asyncHandler, userTokens } from "../../utils/service.util";
-import { credentialLoginService, getNewTokenService, resetPasswordService } from './auth.service';
+import { IUser } from "../user/user.interface";
+import { getNewTokenService, resetPasswordService } from './auth.service';
 
 // google login
 export const googleAuthLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
-    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+    const redirectParams = req.query.redirect as string || "/";
+
+    passport.authenticate( "google", { scope: [ "profile", "email" ], state: redirectParams } )( req, res, next );
 
 } );
+
 // google call back
 export const googleAuthCallback = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
     const user = req.user;
-    console.log( user, "google callback" );
+    const state = req.query.state as string || "";
+
+    console.log( state, user, "google callback" );
+    
+    if ( state.startsWith("/") )
+    {
+        state = state.slice( 1 );
+    }
 
     if ( !user )
     {
@@ -37,51 +48,45 @@ export const googleAuthCallback = asyncHandler( async ( req: Request, res: Respo
         next( error )
     }
 
-    res.redirect("http://localhost:3000")
-
+    res.redirect( `http://localhost:3000/${ state }` );
 } );
 
 
-
-export const authLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+// credential login
+export const authLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ) =>
 {
-    // console.log(req.body)
-    const loginData = await credentialLoginService( req.body );
-
-    if ( !loginData )
+    passport.authenticate( "local", { session: false }, async ( error, user: IUser, info: unknown ) =>
     {
-        responseFunction( res, {
-            message: `Something went wrong when searching the user`,
-            statusCode: httpStatus.EXPECTATION_FAILED,
-            data: null,
-        } );
-
-        return;
-    }
-    if ( loginData )
-    {
-
-        try
+        if ( error )
         {
-            await setCookie( res, "refreshToken", loginData.refreshToken, 240 * 60 * 60 * 1000 );
-
-            await setCookie( res, "accessToken", loginData.accessToken, 100 * 60 * 1000 );
-        }
-        catch ( error: unknown )
-        {
-            next(error)
+            return next( new AppError( httpStatus.INTERNAL_SERVER_ERROR, error as string ) );
         }
 
+        if ( !user )
+        {
+            return next( new AppError( httpStatus.UNAUTHORIZED, info?.message || "Unauthorized" ) );
+        }
+
+        const loginData = await userTokens( user );
+
+        await setCookie( res, "refreshToken", loginData.refreshToken, 240 * 60 * 60 * 1000 );
+        await setCookie( res, "accessToken", loginData.accessToken, 100 * 60 * 1000 );
+
+        delete user.toObject().password;
+
         responseFunction( res, {
-            message: `User found!!`,
+            message: "User logged in successfully",
             statusCode: httpStatus.ACCEPTED,
-            data: loginData,
+            data: {
+                email: user.email,
+                accessToken: loginData.accessToken,
+                refreshToken: loginData.refreshToken,
+                userId: user._id,
+                expiresIn: 300000,
+                user,
+            },
         } );
-    }
-    else
-    {
-        next()
-    }
+    } )( req, res, next );
 } );
 
 export const getNewAccessToken = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>

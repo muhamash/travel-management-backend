@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
+import mongoose from "mongoose";
 import { AppError } from "../config/errors/App.error";
 import { isZodError, parseZodError } from "../utils/middleware.util";
 import { ErrorResponsePayload } from "../utils/utils.type";
@@ -16,53 +17,106 @@ export const globalErrorResponse = (
     let message = "Something went wrong";
     let stack: string | undefined;
 
-    //  Zod errors with fields
+    // ========================
+    // ✅ Handle Zod validation
+    // ========================
     if ( isZodError( error ) )
     {
         const fieldIssues = parseZodError( error );
 
-        // console.log(error.issues)
-
         message = fieldIssues.length
             ? `Validation error on field '${ fieldIssues[ 0 ].field }': ${ fieldIssues[ 0 ].message }`
-            : error?.issues[0]?.message || "Validation error!!!";
+            : "Validation error!";
 
-        const responsePayload = {
+        return res.status( httpStatus.BAD_REQUEST ).json( {
             name: error.name || "ZodError",
             message,
             status: httpStatus.BAD_REQUEST,
             success: false,
             errors: fieldIssues,
             ...( process.env.NODE_ENV === "development" && { stack: error.stack } ),
-        };
-
-        return res.status( httpStatus.BAD_REQUEST ).json( responsePayload );
+        } );
     }
 
-    //  custom AppError
-    if ( error instanceof AppError )
+    // ========================
+    // ✅ Mongoose CastError (invalid ObjectId, etc.)
+    // ========================
+    if (
+        error instanceof mongoose.Error.CastError
+    )
+    {
+        message = `Invalid value for '${ error.path }': ${ error.value }`;
+        statusCode = httpStatus.BAD_REQUEST;
+    }
+
+    // ========================
+    // ✅ Mongoose ValidationError
+    // ========================
+    else if ( error instanceof mongoose.Error.ValidationError )
+    {
+        const errors = Object.values( error.errors ).map( ( err ) => ( {
+            field: ( err as unknown ).path,
+            message: err.message,
+        } ) );
+        message = `Validation failed on ${ errors.length } field(s).`;
+        return res.status( httpStatus.BAD_REQUEST ).json( {
+            name: "MongooseValidationError",
+            message,
+            status: httpStatus.BAD_REQUEST,
+            success: false,
+            errors,
+            ...( process.env.NODE_ENV === "development" && { stack: error.stack } ),
+        } );
+    }
+
+    // ========================
+    // ✅ Duplicate key error (e.g., unique email or username)
+    // ========================
+    else if (
+        typeof error === "object" &&
+        error !== null &&
+        ( error as unknown ).code === 11000
+    )
+    {
+        const dupFields = Object.keys( ( error as unknown ).keyValue || {} );
+        message = `Duplicate field value for: ${ dupFields.join( ", " ) }`;
+        statusCode = httpStatus.CONFLICT;
+    }
+
+    // ========================
+    // ✅ Custom AppError
+    // ========================
+    else if ( error instanceof AppError )
     {
         statusCode = error.statusCode;
         message = error.message;
         stack = error.stack;
     }
-    //  general Error
+
+    // ========================
+    // ✅ General JavaScript Error
+    // ========================
     else if ( error instanceof Error )
     {
         message = error.message;
         stack = error.stack;
-        // fallback if no custom statusCode
-        statusCode = ( error as unknown ).statusCode ?? httpStatus.BAD_REQUEST;
-    }
-    // unknown error fallback
-    else
-    {
-        message = "unknownn error";
+        statusCode = ( error as unknown ).statusCode || httpStatus.INTERNAL_SERVER_ERROR;
     }
 
-    // error response payload
+    // ========================
+    // ✅ Fallback unknown error
+    // ========================
+    else
+    {
+        message = "An unexpected error occurred.";
+        statusCode = httpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    // ========================
+    // ✅ Build Response
+    // ========================
     const responsePayload: ErrorResponsePayload = {
-        name: ( error as unknown ).name || "unknownError",
+        name: ( error as unknown ).name || "Error",
         message,
         status: statusCode,
         success: false,
