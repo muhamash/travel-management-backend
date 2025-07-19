@@ -1,4 +1,4 @@
-import { TourType } from "./tour.model";
+import { TourType } from "./tourType.model";
 
 export const createTourTypeService = async ( name: string ) =>
 {
