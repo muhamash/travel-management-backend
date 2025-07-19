@@ -1,7 +1,8 @@
+import bcrypt from "bcryptjs";
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile, VerifyCallback } from "passport-google-oauth20";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Role } from "../../modules/user/user.interface";
+import { IsActive, Role } from "../../modules/user/user.interface";
 import { User } from "../../modules/user/user.model";
 import { envStrings } from "../env.config";
 
@@ -9,9 +10,51 @@ import { envStrings } from "../env.config";
 passport.use(
     new LocalStrategy(
         {
-
+            usernameField: "email",
+            passwordField: "password",
+            passReqToCallback: true,
         },
-        () => async ( email: string, password: string, done: VerifyCallback ) => { }
+        async ( req, email, password, done ) =>
+        {
+            try
+            {
+                const user = await User.findOne( { email } );
+
+                if ( !user )
+                {
+                    return done( null, false, { message: "Invalid email or password" } );
+                }
+
+                if ( user.isDeleted )
+                {
+                    return done( null, false, { message: "User is deleted" } );
+                }
+
+                const thirdPartyAuths = user.auths?.some( ( auth ) => auth.provider === "credential" );
+
+                if ( !password || !user.password || thirdPartyAuths )
+                {
+                    return done( null, false, { message: "Login with third party not allowed" } );
+                }
+
+                if ( user.isActive === IsActive.INACTIVE || user.isActive === IsActive.BLOCKED )
+                {
+                    return done( null, false, { message: `User is ${user.isActive.toLowerCase()}` } );
+                }
+
+                const isMatch = await bcrypt.compare( password, user.password );
+
+                if ( !isMatch )
+                {
+                    return done( null, false, { message: "Invalid email or password" } );
+                }
+
+                return done( null, user );
+            } catch ( err )
+            {
+                return done( err );
+            }
+        }
     )
 );
 
