@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 import { ITour } from "./tour.interface";
 
 const tourSchema = new Schema<ITour>( {
-    title: { type: String, required: true },
+    title: { type: String, required: true, unique: true },
     slug: { type: String, required: true, unique: true },
     description: { type: String },
     images: { type: [ String ], default: [] },
