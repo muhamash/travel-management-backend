@@ -10,14 +10,24 @@ import { credentialLoginService, getNewTokenService, resetPasswordService } from
 // google login
 export const googleAuthLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
-    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+    const redirectParams = req.query.redirect as string || "/";
+
+    passport.authenticate( "google", { scope: [ "profile", "email" ], state: redirectParams } )( req, res, next );
 
 } );
+
 // google call back
 export const googleAuthCallback = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
     const user = req.user;
-    console.log( user, "google callback" );
+    const state = req.query.state as string || "";
+
+    console.log( state, user, "google callback" );
+    
+    if ( state.startsWith("/") )
+    {
+        state = state.slice( 1 );
+    }
 
     if ( !user )
     {
@@ -37,12 +47,11 @@ export const googleAuthCallback = asyncHandler( async ( req: Request, res: Respo
         next( error )
     }
 
-    res.redirect("http://localhost:3000")
-
+    res.redirect( `http://localhost:3000/${ state }` );
 } );
 
 
-
+// credential login
 export const authLogin = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
     // console.log(req.body)

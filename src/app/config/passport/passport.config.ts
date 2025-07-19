@@ -1,8 +1,19 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile, VerifyCallback } from "passport-google-oauth20";
+import { Strategy as LocalStrategy } from "passport-local";
 import { Role } from "../../modules/user/user.interface";
 import { User } from "../../modules/user/user.model";
 import { envStrings } from "../env.config";
+
+// for credential login
+passport.use(
+    new LocalStrategy(
+        {
+
+        },
+        () => async ( email: string, password: string, done: VerifyCallback ) => { }
+    )
+);
 
 
 passport.use(
@@ -57,7 +68,6 @@ passport.use(
         }
     )
 );
-
 
 passport.serializeUser( ( user: Express.User, done: ( error: unknown, id?: unknown ) => void ) =>
 {
