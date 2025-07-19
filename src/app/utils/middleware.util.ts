@@ -69,6 +69,7 @@ export const isAllowedToUpdate = ( currentRole: string, currentUserId: string, t
     {
       return true;
     }
+    
     if ( targetRole === Role.ADMIN || targetRole === Role.SUPER_ADMIN )
     {
       return false;

@@ -25,22 +25,21 @@
 # Content-Type: application/json
 
 
-POST http://localhost:3000/api/v1/auth/login
-Content-Type: application/json
-
-{
-    "email": "super@admin.ash",
-    "password":"34534534@54A3"
-}
-
-
-# PATCH http://localhost:3000/api/v1/user/update/68796af945ae7269221a35b3
+# POST http://localhost:3000/api/v1/auth/login
 # Content-Type: application/json
 
 # {
-#     "name": "Ashraful",
-#     "role": "admin"
+#     "email": "super@admin.ash",
+#     "password":"34534534@54A3"
 # }
+
+
+PATCH http://localhost:3000/api/v1/user/update/68762b787fbd7c35cb3cba42
+Content-Type: application/json
+
+{
+    "name": "super admin ashraful"
+}
 
 # POST http://localhost:3000/api/v1/auth/refresh-token
 # Content-Type: application/json
