@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from 'http-status-codes';
+import { AppError } from "../../config/errors/App.error";
 import { responseFunction } from "../../utils/controller.util";
 import { asyncHandler } from "../../utils/service.util";
-import { createTourTypeService, getAllTourTypesService, getTourTypeByIdService, updateTourTypeService } from "./tour.service";
+import { createTourService, createTourTypeService, deleteTourByIdService, getAllTourService, getAllTourTypesService, getSingleTourService, getTourTypeByIdService, updateTourByIdService, updateTourTypeService } from "./tour.service";
 import { TourType } from "./tourType.model";
 
+// tour type controller functions
 export const createTourType = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
 
@@ -181,3 +183,103 @@ export const deleteTourType = asyncHandler( async ( req: Request, res: Response,
         data: deletedTourType,
     } );
 } );    
+
+// tour controller functions
+export const createTour = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const user = req.user;
+    const createdTour = await createTourService( req.body, user );
+
+    if ( !createdTour )
+    {
+        throw new AppError(httpStatus.BAD_REQUEST, "Can't create the tour!")
+    }
+
+    responseFunction( res, {
+        message: "Tour created successfully",
+        statusCode: httpStatus.CREATED,
+        data: createdTour, 
+    } );
+} );
+
+export const getAllTour = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
+{
+    const { page, limit, sortBy, sortOrder } = req.query;
+
+    const allTours = await getAllTourService( {
+        page: Number( page ) || 1,
+        limit: Number( limit ) || 10,
+        sortBy: ( sortBy as string ) || "createdAt",
+        sortOrder: ( sortOrder as "asc" | "desc" ) || "desc",
+    } );
+
+
+    if ( !allTours.data.length )
+    {
+        throw new AppError( httpStatus.OK, "Tour dataset is empty!" );
+    }
+
+    responseFunction( res, {
+        message: "Tours fetched successfully",
+        statusCode: httpStatus.OK,
+        data: allTours.data,
+        meta: allTours.meta,
+    } );
+} );
+
+export const getSingleTour = asyncHandler( async ( req: Request, res: Response, next: NextFunction ) =>
+{
+    const id = req.params.id;
+
+    if ( !id )
+    {
+        throw new AppError(httpStatus.BAD_REQUEST, `Please provide an id`)
+    }
+
+    const tour = await getSingleTourService( id );
+
+        console.log(tour)
+
+    responseFunction( res, {
+        message: "Tour found",
+        statusCode: httpStatus.CREATED,
+        data: tour, 
+    } );
+    
+} );
+
+export const deleteTourById = asyncHandler( async ( req: Request, res: Response, next: NextFunction ) =>
+{
+    const id = req.params.id;
+    const user = req.user;
+
+    if ( !id )
+    {
+        throw new AppError(httpStatus.BAD_REQUEST, `Please provide an id`)
+    }
+
+    await deleteTourByIdService( id, user );
+
+    responseFunction( res, {
+        message: "Tour deleted!!!",
+        statusCode: httpStatus.OK,
+        data: null, 
+    } );
+    
+} );
+
+export const updateTourById = asyncHandler( async ( req: Request, res: Response, next: NextFunction ) =>
+{
+    const id = req.params.id;
+    const user = req.user;
+    const payload = req.body;
+
+    const updatedTour = await updateTourByIdService( user, id, payload );
+
+    responseFunction( res, {
+        message: "Tour updated!!!",
+        statusCode: httpStatus.OK,
+        data: updatedTour, 
+    } );
+    
+} );
