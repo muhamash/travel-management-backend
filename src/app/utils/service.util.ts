@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import slugify from "slugify";
 import { envStrings } from "../config/env.config";
 import { IUser } from "../modules/user/user.interface";
 import { generateToken } from "./middleware.util";
@@ -44,4 +45,9 @@ export const userTokens = async ( user: Partial<IUser>, next: NextFunction ) =>
     {
         next( error )
     }
+};
+
+export const generateSlug = ( title: string ) =>
+{
+    return slugify( title, { lower: true, strict: true } );
 };

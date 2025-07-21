@@ -90,8 +90,8 @@
 # }
 
 
-GET  http://localhost:3000/api/v1/division
-Content-Type: application/json
+# GET  http://localhost:3000/api/v1/division/687c0797321a92e6b72dc51f
+# Content-Type: application/json
 
 # {
 #     "name": "Sylhet",
@@ -99,3 +99,42 @@ Content-Type: application/json
 #     "description": "Capital city of Bangladesh",
 #     "thumbnail": "https://example.com/dhaka-thumbnail.jpg"
 # }
+
+
+# POST http://localhost:3000/api/v1/tour/create-tour
+# Content-Type: application/json
+
+# {
+#   "title": "asdas sdssaTousdassr",
+#   "description": "Enjoy.",
+#   "images": ["https://example.com/beach.jpg"],
+#   "location": "Cox's dazar",
+#   "costFrom": 6500,
+#   "startDate": "2025-08-01",
+#   "endDate": "2025-08-05",
+#   "included": ["Transport", "Meals"],
+#   "excluded": ["Personal expenses"],
+#   "amenities": ["Hotel", "Tour Guide"],
+#   "tourPlan": ["Day 1: Arrival", "Day 2: Beach", "Day 3: Departure"],
+#   "maxGuest": 20,
+#   "minAge": 12,
+#   "tourType": "687bfdbd885dff4318fad225",
+#   "division": "687c0797321a92e6b72dc51f"
+# }
+
+# GET http://localhost:3000/api/v1/tour/687d2ce78dc01eb4c8a4baa5
+# Content-Type: application/json
+
+# GET http://localhost:3000/api/v1/tour/687d14267f8c5d7ee9e4b87e
+# Content-Type: application/json
+
+# DELETE http://localhost:3000/api/v1/tour/687d2cf88dc01eb4c8a4baaa
+# Content-Type: application/json
+
+PATCH http://localhost:3000/api/v1/tour/687d2ce78dc01eb4c8a4baa5
+Content-Type: application/json
+
+{
+    "title": "updated",
+    "division": "687c0797321a92e6b72dc51f"
+}

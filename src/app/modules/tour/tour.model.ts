@@ -22,8 +22,7 @@ const tourSchema = new Schema<ITour>( {
     } ],
     host: {
         type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        ref: "User"
     },
     division: {
         type: Schema.Types.ObjectId,
@@ -40,6 +39,18 @@ const tourSchema = new Schema<ITour>( {
     versionKey: false,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+} );
+
+tourSchema.pre( "findOneAndDelete", async function ( next )
+{
+    const tour = await this.model.findOne( this.getFilter() );
+
+    if ( tour?.tourist?.length )
+    {
+        return next( new Error( "Cannot delete tour with active bookings or participants" ) );
+    }
+
+    next();
 } );
 
 export const Tour = model<ITour>("Tour", tourSchema)
