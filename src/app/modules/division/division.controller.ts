@@ -9,10 +9,10 @@ export const createDivision = asyncHandler( async ( req: Request, res: Response,
 {
 
     const divisionData = req.body;
-    if ( !divisionData.name || !divisionData.slug )
+    if ( !divisionData.name )
     {
         responseFunction( res, {
-            message: `Name and slug are required`,
+            message: `Name is required`,
             statusCode: httpStatus.EXPECTATION_FAILED,
             data: null,
         } );

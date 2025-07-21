@@ -182,8 +182,15 @@ export const updateTourByIdService = async (
         }
     }
 
+    let slug;
+    
+    if ( payload.title )
+    {
+        slug = generateSlug( payload.title )
+    }
+
     //  Update the tour
-    Object.assign( tour, payload );
+    Object.assign( tour, { ...payload, slug } );
     await tour.save();
 
     return tour;
