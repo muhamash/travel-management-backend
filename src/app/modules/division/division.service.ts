@@ -5,7 +5,10 @@ import { Division } from "./division.model";
 
 export const createDivisionService = async ( divisionData: IDivision ) =>
 {
-    const newDivision = await Division.create( divisionData );
+    const newDivision = await Division.create( {
+        ...divisionData,
+        // slug: generateSlug(divisionData.name)
+    } );
 
     return newDivision;
 }
@@ -36,8 +39,12 @@ export const updateDivisionService = async ( divisionId: string, payload: Partia
         throw new AppError(httpStatus.NOT_FOUND, `Division with ID ${ divisionId } not found` );
     }
 
-    const updatedDivision = await Division.findByIdAndUpdate( divisionId, payload, { new: true, runValidators: true } );
+    const updatedDivision = await Division.findByIdAndUpdate( divisionId, {
+        ...payload
+        // slug: generateSlug( payload.name )
+    }, { new: true, runValidators: true } );
 
+    // division.save();
     return updatedDivision;
 }
 

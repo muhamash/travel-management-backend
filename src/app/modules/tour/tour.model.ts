@@ -1,9 +1,11 @@
+import { NextFunction } from "express";
 import { model, Schema } from "mongoose";
+import { generateSlug } from "../../utils/service.util";
 import { ITour } from "./tour.interface";
 
 const tourSchema = new Schema<ITour>( {
     title: { type: String, required: true, unique: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, unique: true },
     description: { type: String },
     images: { type: [ String ], default: [] },
     location: { type: String },
@@ -50,6 +52,16 @@ tourSchema.pre( "findOneAndDelete", async function ( next )
         return next( new Error( "Cannot delete tour with active bookings or participants" ) );
     }
 
+    next();
+} );
+
+tourSchema.pre( "save", function ( next: NextFunction )
+{
+    console.log("Triggering auto generated slug before save")
+    if ( this.isModified( "title" ) || !this.slug )
+    {
+        this.slug = generateSlug( this.title );
+    }
     next();
 } );
 
