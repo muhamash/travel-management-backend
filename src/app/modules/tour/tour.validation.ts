@@ -46,6 +46,8 @@ export const tourValidation = z.object( {
 
     maxGuest: z.number().int().positive().optional(),
     minAge: z.number().int().positive().optional(),
+    departureLocation: z.string().optional(),
+    arrivalLocation: z.string().optional(),
 
     tourType: objectId,
     division: objectId,

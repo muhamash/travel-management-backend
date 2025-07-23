@@ -20,9 +20,9 @@ export const getAllDivisionsService = async () =>
     return divisions;
 }
 
-export const getDivisionByIdService = async ( divisionId: string ) =>
+export const getDivisionByIdService = async ( slug: string ) =>
 {
-    const division = await Division.findById( divisionId ); 
+    const division = await Division.find( { slug } ); 
     if ( !division )
     {
         return null;

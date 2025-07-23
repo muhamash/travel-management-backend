@@ -11,7 +11,9 @@ router.post( "/create", checkAuth( Role.ADMIN, Role.SUPER_ADMIN, Role.USER ), va
 
 router.get( "/", checkAuth( Role.ADMIN, Role.SUPER_ADMIN, Role.USER ), getAllDivisions );
 
-router.get( "/:id", checkAuth( Role.ADMIN, Role.SUPER_ADMIN, Role.USER ), getDivisionById );
+// router.get( "/:id", checkAuth( Role.ADMIN, Role.SUPER_ADMIN, Role.USER ), getDivisionById );
+
+router.get( "/:slug", checkAuth( Role.ADMIN, Role.SUPER_ADMIN, Role.USER ), getDivisionById );
 
 router.patch( "/:id", checkAuth( Role.ADMIN, Role.SUPER_ADMIN, Role.USER ), validateRequest( zodUpdateDivisionSchema ), updateDivision );
 
