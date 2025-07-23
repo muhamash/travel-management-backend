@@ -1,8 +1,11 @@
+ 
 import httpStatus from 'http-status-codes';
 import { AppError } from "../../config/errors/App.error";
+import { QueryBuilder } from '../../utils/queryBuilder.util';
 import { Division } from '../division/division.model';
 import { IUser, Role } from '../user/user.interface';
 import { User } from '../user/user.model';
+import { excludeField, searchQuery } from './tour.constrain';
 import { ITour } from './tour.interface';
 import { Tour } from './tour.model';
 import { TourType } from "./tourType.model";
@@ -97,44 +100,63 @@ export const getAllTourService = async ( query?: Record<string, string> ) =>
     //     Tour.countDocuments( filters ),
     // ] );
 
-    const searchTerm = query.search || "";
+    // const searchTerm = query.search || "";
+    // const sort = query.sort || "-createdAt";
+    // const fields = query.fields?.split( "," ).join( " " ) || "";
+    // const limit = Number(query.limit) || 5;
+    // const page = Number(query.page) || 1;
+    // const skip = Number( ( page - 1 ) * limit );
+    
+    // delete query.search;
+    // delete query.sort;
+    // if ( query )
+    // {
+    //     for ( const field of [ "search", "sort", "fields", "page", "skip", "limit" ] )
+    //     {
+    //         // console.log( query, field, query[ field ] );
+    //         delete query[ field ];
+    //     }
+    // }
 
-    const searchQuery = {
-        $or: [ "title", "description", "location" ].map( field => (
-            {
-                [ field ]: { $regex: searchTerm, $options: "i" }
-            }
-        ) )
-    };
+    // const [ tours, total ] = await Promise.all( [
+    //     Tour.find(
+    //         // {
+    //         //     // title: {$regex: searchTerm, $options: "i"}
+    //         //     $or: [
+    //         //         { title: { $regex: searchTerm, $options: "i" } },
+    //         //         { description: { $regex: searchTerm, $options: "i" } },
+    //         //         { location: { $regex: searchTerm, $options: "i" } },
+    //         //     ]
+    //         // }
+    //         searchQuery
+    //     ).find( query ).sort( sort ).select(fields).skip( skip )
+    //         .limit( limit )
+    //         .populate( "division", "name" )
+    //         .populate( "tourType", "name" )
+    //         .populate( "host", "name email" ),
+    //     Tour.countDocuments(),
+    // ] );
 
-    delete query.search;
+    const modelQuery = new QueryBuilder( Tour.find(), query );
 
-    const [ tours, total ] = await Promise.all( [
-        Tour.find(
-            // {
-            //     // title: {$regex: searchTerm, $options: "i"}
-            //     $or: [
-            //         { title: { $regex: searchTerm, $options: "i" } },
-            //         { description: { $regex: searchTerm, $options: "i" } },
-            //         { location: { $regex: searchTerm, $options: "i" } },
-            //     ]
-            // }
-            searchQuery
-        ).find(query)
-            .populate( "division", "name" )
-            .populate( "tourType", "name" )
-            .populate( "host", "name email" ),
-        Tour.countDocuments(),
+    const tours = modelQuery.searchableField( searchQuery ).filter( excludeField ).sort().fields().pagination();
+    // const meta = modelQuery.getMeta();
+
+    const [data, meta] = await Promise.all( [
+        tours.build(),
+        modelQuery.getMeta()
     ] );
 
+
     return {
-        meta: {
-            total,
-            // page,
-            // limit,
-            // pages: Math.ceil( total / limit ),
-        },
-        data: tours,
+        // meta: {
+        //     total,
+        //     page,
+        //     limit,
+        //     pages: Math.ceil( total / limit ),
+        // },
+        meta,
+        data,
     };
 };
 
