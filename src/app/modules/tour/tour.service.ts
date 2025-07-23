@@ -1,8 +1,11 @@
+ 
 import httpStatus from 'http-status-codes';
 import { AppError } from "../../config/errors/App.error";
+import { QueryBuilder } from '../../utils/queryBuilder.util';
 import { Division } from '../division/division.model';
 import { IUser, Role } from '../user/user.interface';
 import { User } from '../user/user.model';
+import { excludeField, searchQuery } from './tour.constrain';
 import { ITour } from './tour.interface';
 import { Tour } from './tour.model';
 import { TourType } from "./tourType.model";
@@ -71,52 +74,89 @@ export const createTourService = async ( tourData: ITour, user: Partial<IUser> )
     return tour;
 }
 
-export const getAllTourService = async ( {
-    page = 1,
-    limit = 10,
-    sortBy = "createdAt",
-    sortOrder = "desc",
-    query = {},
-}: {
-    page?: number;
-    limit?: number;
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
-    query?: Record<string, string>;
-} ) =>
+export const getAllTourService = async ( query?: Record<string, string> ) =>
 {
-    console.log(query)
-    const skip = ( page - 1 ) * limit;
-    const sortOptions: Record<string, number> = {
-        [ sortBy ]: sortOrder === "asc" ? 1 : -1,
-    };
+    // console.log(query)
+    // const skip = ( page - 1 ) * limit;
+    // const sortOptions: Record<string, number> = {
+    //     [ sortBy ]: sortOrder === "asc" ? 1 : -1,
+    // };
 
-    // Clean query object
-    const filters: Record<string, string> = { ...query };
-    delete filters.page;
-    delete filters.limit;
-    delete filters.sortBy;
-    delete filters.sortOrder;
+    // // Clean query object
+    // const filters: Record<string, string> = { ...query };
+    // delete filters.page;
+    // delete filters.limit;
+    // delete filters.sortBy;
+    // delete filters.sortOrder;
 
-    const [ tours, total ] = await Promise.all( [
-        Tour.find( filters )
-            .populate( "division", "name" )
-            .populate( "tourType", "name" )
-            .populate( "host", "name email" )
-            .sort( sortOptions )
-            .skip( skip )
-            .limit( limit ),
-        Tour.countDocuments( filters ),
+    // const [ tours, total ] = await Promise.all( [
+    //     Tour.find( filters )
+    //         .populate( "division", "name" )
+    //         .populate( "tourType", "name" )
+    //         .populate( "host", "name email" )
+    //         .sort( sortOptions )
+    //         .skip( skip )
+    //         .limit( limit ),
+    //     Tour.countDocuments( filters ),
+    // ] );
+
+    // const searchTerm = query.search || "";
+    // const sort = query.sort || "-createdAt";
+    // const fields = query.fields?.split( "," ).join( " " ) || "";
+    // const limit = Number(query.limit) || 5;
+    // const page = Number(query.page) || 1;
+    // const skip = Number( ( page - 1 ) * limit );
+    
+    // delete query.search;
+    // delete query.sort;
+    // if ( query )
+    // {
+    //     for ( const field of [ "search", "sort", "fields", "page", "skip", "limit" ] )
+    //     {
+    //         // console.log( query, field, query[ field ] );
+    //         delete query[ field ];
+    //     }
+    // }
+
+    // const [ tours, total ] = await Promise.all( [
+    //     Tour.find(
+    //         // {
+    //         //     // title: {$regex: searchTerm, $options: "i"}
+    //         //     $or: [
+    //         //         { title: { $regex: searchTerm, $options: "i" } },
+    //         //         { description: { $regex: searchTerm, $options: "i" } },
+    //         //         { location: { $regex: searchTerm, $options: "i" } },
+    //         //     ]
+    //         // }
+    //         searchQuery
+    //     ).find( query ).sort( sort ).select(fields).skip( skip )
+    //         .limit( limit )
+    //         .populate( "division", "name" )
+    //         .populate( "tourType", "name" )
+    //         .populate( "host", "name email" ),
+    //     Tour.countDocuments(),
+    // ] );
+
+    const modelQuery = new QueryBuilder( Tour.find(), query );
+
+    const tours = modelQuery.searchableField( searchQuery ).filter( excludeField ).sort().fields().pagination();
+    // const meta = modelQuery.getMeta();
+
+    const [data, meta] = await Promise.all( [
+        tours.build(),
+        modelQuery.getMeta()
     ] );
 
+
     return {
-        meta: {
-            total,
-            page,
-            limit,
-            pages: Math.ceil( total / limit ),
-        },
-        data: tours,
+        // meta: {
+        //     total,
+        //     page,
+        //     limit,
+        //     pages: Math.ceil( total / limit ),
+        // },
+        meta,
+        data,
     };
 };
 

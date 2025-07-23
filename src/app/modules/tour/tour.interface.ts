@@ -20,6 +20,8 @@ export interface ITour {
     minAge?: number;
     tourist?: Types.ObjectId[];
     host?: Types.ObjectId;
-    division: Types.ObjectId
-    tourType: Types.ObjectId
+    division: Types.ObjectId;
+    tourType: Types.ObjectId;
+    departureLocation?: string;
+    arrivalLocation?: string;
 }

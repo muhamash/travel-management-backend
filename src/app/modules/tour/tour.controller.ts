@@ -206,13 +206,15 @@ export const getAllTour = asyncHandler( async ( req: Request, res: Response, nex
 {
     const query = req.query;
 
-    const allTours = await getAllTourService( {
-        page: Number( query.page ) || 1,
-        limit: Number( query.limit ) || 10,
-        sortBy: query.sortBy as string || "createdAt",
-        sortOrder: query.sortOrder as "asc" | "desc" || "desc",
-        query: query as Record<string, string>,
-    } );
+    // {
+    //     page: Number( query.page ) || 1,
+    //     limit: Number( query.limit ) || 10,
+    //     sortBy: query.sortBy as string || "createdAt",
+    //     sortOrder: query.sortOrder as "asc" | "desc" || "desc",
+    //     query: query as Record<string, string>,
+    // }
+
+    const allTours = await getAllTourService(query);
 
 
     if ( !allTours.data.length )

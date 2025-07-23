@@ -77,7 +77,7 @@ export const getAllDivisions = asyncHandler( async ( req: Request, res: Response
 
 export const getDivisionById = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
-    const divisionId = req.params.id;
+    const divisionId = req.params.slug;
 
     if ( !divisionId )
     {
