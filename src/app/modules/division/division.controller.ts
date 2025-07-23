@@ -9,6 +9,7 @@ export const createDivision = asyncHandler( async ( req: Request, res: Response,
 {
 
     const divisionData = req.body;
+    // console.log(divisionData)
     if ( !divisionData.name )
     {
         responseFunction( res, {
@@ -124,10 +125,10 @@ export const updateDivision = asyncHandler( async ( req: Request, res: Response,
         return;
     }
 
-    if ( !updateData.name || !updateData.slug )
+    if ( !updateData.name )
     {
         responseFunction( res, {
-            message: `Name and slug are required for update`,
+            message: `Name is required for update`,
             statusCode: httpStatus.EXPECTATION_FAILED,
             data: null,
         } );

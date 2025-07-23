@@ -1,6 +1,5 @@
 import httpStatus from 'http-status-codes';
 import { AppError } from "../../config/errors/App.error";
-import { generateSlug } from '../../utils/service.util';
 import { Division } from '../division/division.model';
 import { IUser, Role } from '../user/user.interface';
 import { User } from '../user/user.model';
@@ -61,7 +60,7 @@ export const createTourService = async ( tourData: ITour, user: Partial<IUser> )
     const tour = await Tour.create( {
         ...tourData,
         host: user?.userId,
-        slug: generateSlug( tourData.title ),
+        // slug: generateSlug( tourData.title ),
     } );
 
     if ( !tour )
@@ -77,27 +76,37 @@ export const getAllTourService = async ( {
     limit = 10,
     sortBy = "createdAt",
     sortOrder = "desc",
+    query = {},
 }: {
     page?: number;
     limit?: number;
     sortBy?: string;
     sortOrder?: "asc" | "desc";
+    query?: Record<string, string>;
 } ) =>
 {
-    const skip = (page - 1) * limit;
+    console.log(query)
+    const skip = ( page - 1 ) * limit;
     const sortOptions: Record<string, number> = {
         [ sortBy ]: sortOrder === "asc" ? 1 : -1,
     };
 
+    // Clean query object
+    const filters: Record<string, string> = { ...query };
+    delete filters.page;
+    delete filters.limit;
+    delete filters.sortBy;
+    delete filters.sortOrder;
+
     const [ tours, total ] = await Promise.all( [
-        Tour.find()
+        Tour.find( filters )
             .populate( "division", "name" )
             .populate( "tourType", "name" )
             .populate( "host", "name email" )
             .sort( sortOptions )
             .skip( skip )
             .limit( limit ),
-        Tour.countDocuments(),
+        Tour.countDocuments( filters ),
     ] );
 
     return {
@@ -143,7 +152,7 @@ export const updateTourByIdService = async (
         throw new ApiError( httpStatus.NOT_FOUND, "Tour not found" );
     }
 
-    console.log( payload )
+    // console.log( payload )
     const isAdmin = user.role === Role.ADMIN || user.role === Role.SUPER_ADMIN;
     
     const isHost = tour.host?.toString() === user.userId;
@@ -175,22 +184,22 @@ export const updateTourByIdService = async (
     if ( payload.host )
     {
         const existHost = await User.findById( payload.host );
-        console.log("tour host",existHost)
+        // console.log("tour host",existHost)
         if ( !existHost )
         {
             throw new AppError( httpStatus.NOT_FOUND, "Invalid host ID" );
         }
     }
 
-    let slug;
-    
-    if ( payload.title )
-    {
-        slug = generateSlug( payload.title )
-    }
+    // let slug;
+
+    // if ( payload.title )
+    // {
+    //     slug = generateSlug( payload.title )
+    // }
 
     //  Update the tour
-    Object.assign( tour, { ...payload, slug } );
+    Object.assign( tour, payload );
     await tour.save();
 
     return tour;

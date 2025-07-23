@@ -1,20 +1,22 @@
+import { NextFunction } from 'express';
 import httpStatus from 'http-status-codes';
 import { model, Schema } from "mongoose";
 import { AppError } from "../../config/errors/App.error";
+import { generateSlug } from '../../utils/service.util';
 import { Tour } from "../tour/tour.model";
 import { IDivision } from "./division.interface";
 
 const divisionSchema = new Schema<IDivision>( {
     name: { type: String, required: true, unique: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, unique: true },
     description: { type: String },
     thumbnail: { type: String }
 },
     {
-    timestamps: true,
-    versionKey: false,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+        timestamps: true,
+        versionKey: false,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );
 
@@ -33,6 +35,30 @@ divisionSchema.pre( "findOneAndDelete", async function ( next )
                 `Cannot delete division "${ docToDelete.name }" because it's associated with ${ linkedTours } tour(s).`
             )
         );
+    }
+
+    next();
+} );
+
+divisionSchema.pre( "save", async function ( next )
+{
+
+    if ( this.isModified( "name" ) || !this.slug )
+    {
+        this.slug = generateSlug( this.name );
+    }
+    next();
+} );
+
+divisionSchema.pre( "findOneAndUpdate", async function( next: NextFunction )
+{
+
+    const division = this.getUpdate() as Partial<IDivision>;
+    // console.log(division, this.name)
+
+    if ( division.name )
+    {
+        division.slug = generateSlug( division.name as string);
     }
 
     next();

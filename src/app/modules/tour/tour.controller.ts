@@ -204,13 +204,14 @@ export const createTour = asyncHandler( async ( req: Request, res: Response, nex
 
 export const getAllTour = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
-    const { page, limit, sortBy, sortOrder } = req.query;
+    const query = req.query;
 
     const allTours = await getAllTourService( {
-        page: Number( page ) || 1,
-        limit: Number( limit ) || 10,
-        sortBy: ( sortBy as string ) || "createdAt",
-        sortOrder: ( sortOrder as "asc" | "desc" ) || "desc",
+        page: Number( query.page ) || 1,
+        limit: Number( query.limit ) || 10,
+        sortBy: query.sortBy as string || "createdAt",
+        sortOrder: query.sortOrder as "asc" | "desc" || "desc",
+        query: query as Record<string, string>,
     } );
 
 

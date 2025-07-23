@@ -1,6 +1,5 @@
 import httpStatus from 'http-status-codes';
 import { AppError } from "../../config/errors/App.error";
-import { generateSlug } from '../../utils/service.util';
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
 
@@ -8,7 +7,7 @@ export const createDivisionService = async ( divisionData: IDivision ) =>
 {
     const newDivision = await Division.create( {
         ...divisionData,
-        slug: generateSlug(divisionData.name)
+        // slug: generateSlug(divisionData.name)
     } );
 
     return newDivision;
@@ -41,10 +40,11 @@ export const updateDivisionService = async ( divisionId: string, payload: Partia
     }
 
     const updatedDivision = await Division.findByIdAndUpdate( divisionId, {
-        ...payload,
-        slug: generateSlug( payload.name )
+        ...payload
+        // slug: generateSlug( payload.name )
     }, { new: true, runValidators: true } );
 
+    // division.save();
     return updatedDivision;
 }
 
