@@ -71,50 +71,68 @@ export const createTourService = async ( tourData: ITour, user: Partial<IUser> )
     return tour;
 }
 
-export const getAllTourService = async ( {
-    page = 1,
-    limit = 10,
-    sortBy = "createdAt",
-    sortOrder = "desc",
-    query = {},
-}: {
-    page?: number;
-    limit?: number;
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
-    query?: Record<string, string>;
-} ) =>
+export const getAllTourService = async ( query?: Record<string, string> ) =>
 {
-    console.log(query)
-    const skip = ( page - 1 ) * limit;
-    const sortOptions: Record<string, number> = {
-        [ sortBy ]: sortOrder === "asc" ? 1 : -1,
+    // console.log(query)
+    // const skip = ( page - 1 ) * limit;
+    // const sortOptions: Record<string, number> = {
+    //     [ sortBy ]: sortOrder === "asc" ? 1 : -1,
+    // };
+
+    // // Clean query object
+    // const filters: Record<string, string> = { ...query };
+    // delete filters.page;
+    // delete filters.limit;
+    // delete filters.sortBy;
+    // delete filters.sortOrder;
+
+    // const [ tours, total ] = await Promise.all( [
+    //     Tour.find( filters )
+    //         .populate( "division", "name" )
+    //         .populate( "tourType", "name" )
+    //         .populate( "host", "name email" )
+    //         .sort( sortOptions )
+    //         .skip( skip )
+    //         .limit( limit ),
+    //     Tour.countDocuments( filters ),
+    // ] );
+
+    const searchTerm = query.search || "";
+
+    const searchQuery = {
+        $or: [ "title", "description", "location" ].map( field => (
+            {
+                [ field ]: { $regex: searchTerm, $options: "i" }
+            }
+        ) )
     };
 
-    // Clean query object
-    const filters: Record<string, string> = { ...query };
-    delete filters.page;
-    delete filters.limit;
-    delete filters.sortBy;
-    delete filters.sortOrder;
+    delete query.search;
 
     const [ tours, total ] = await Promise.all( [
-        Tour.find( filters )
+        Tour.find(
+            // {
+            //     // title: {$regex: searchTerm, $options: "i"}
+            //     $or: [
+            //         { title: { $regex: searchTerm, $options: "i" } },
+            //         { description: { $regex: searchTerm, $options: "i" } },
+            //         { location: { $regex: searchTerm, $options: "i" } },
+            //     ]
+            // }
+            searchQuery
+        ).find(query)
             .populate( "division", "name" )
             .populate( "tourType", "name" )
-            .populate( "host", "name email" )
-            .sort( sortOptions )
-            .skip( skip )
-            .limit( limit ),
-        Tour.countDocuments( filters ),
+            .populate( "host", "name email" ),
+        Tour.countDocuments(),
     ] );
 
     return {
         meta: {
             total,
-            page,
-            limit,
-            pages: Math.ceil( total / limit ),
+            // page,
+            // limit,
+            // pages: Math.ceil( total / limit ),
         },
         data: tours,
     };
