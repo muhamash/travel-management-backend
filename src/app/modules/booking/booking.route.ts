@@ -8,6 +8,6 @@ import { bookingValidation } from './booking.validation';
 
 const router = express.Router();
 
-router.post( "/", checkAuth(Role.USER, Role.GUIDE, Role.SUPER_ADMIN, Role.ADMIN), validateRequest(bookingValidation),  createBooking);
+router.post( "/create", checkAuth(Role.USER, Role.GUIDE, Role.SUPER_ADMIN, Role.ADMIN), validateRequest(bookingValidation),  createBooking);
 
 export const bookingRoutes = router;

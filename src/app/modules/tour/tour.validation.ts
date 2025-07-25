@@ -6,7 +6,7 @@ export const tourTypeValidation = z.object( {
 
 export const objectId = z
     .string( { required_error: "ID is required" } )
-    .regex( /^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId" );
+    .regex( /^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId" ).optional();
 
 export const tourValidation = z.object( {
     title: z

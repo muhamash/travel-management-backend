@@ -51,3 +51,8 @@ export const generateSlug = ( title: string ) =>
 {
     return slugify( title, { lower: true, strict: true } );
 };
+
+export const createTransactionId = () =>
+{
+    return `transaction${ Date.now() }_${ Math.floor( Math.random() * 10000 ) }`;
+}

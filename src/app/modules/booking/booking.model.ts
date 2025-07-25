@@ -9,7 +9,7 @@ const bookingSchema = new Schema( {
     },
     payment: {
         type: Schema.Types.ObjectId,
-        required: true,
+        // required: true,
         ref: "Payment"
     },
     tour: {
