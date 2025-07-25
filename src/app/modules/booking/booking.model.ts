@@ -1,7 +1,6 @@
 import { model, Schema } from "mongoose";
 import { BookingStatus, IBooking } from "./booking.interface";
 
-
 const bookingSchema = new Schema( {
     user: {
         type: Schema.Types.ObjectId,

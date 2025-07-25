@@ -32,11 +32,12 @@ const moduleRouter = [
     },
     {
         path: "/booking",
-        router: bookingRoutes
+        route: bookingRoutes
     }
 ];
 
 moduleRouter.forEach( ( route ) =>
 {
+    // console.log(route.route)
     firstVersionRouter.use(route.path, route.route)
 } )
