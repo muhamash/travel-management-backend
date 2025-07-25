@@ -236,17 +236,17 @@ export const getSingleTour = asyncHandler( async ( req: Request, res: Response, 
 
     if ( !id )
     {
-        throw new AppError(httpStatus.BAD_REQUEST, `Please provide an id`)
+        throw new AppError( httpStatus.BAD_REQUEST, `Please provide an id` )
     }
 
     const tour = await getSingleTourService( id );
 
-        console.log(tour)
+    // console.log(tour)
 
     responseFunction( res, {
         message: "Tour found",
         statusCode: httpStatus.CREATED,
-        data: tour, 
+        data: tour,
     } );
     
 } );

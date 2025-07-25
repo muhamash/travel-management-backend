@@ -4,7 +4,7 @@ export const tourTypeValidation = z.object( {
     name: z.string().min( 1, "Tour type name is required" ).max( 50, "Tour type name must be less than 50 characters" ),
 } );
 
-const objectId = z
+export const objectId = z
     .string( { required_error: "ID is required" } )
     .regex( /^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId" ).optional();
 
