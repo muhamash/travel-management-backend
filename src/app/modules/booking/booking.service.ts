@@ -10,6 +10,7 @@ import { Booking } from './booking.model';
 
 export const createBookingService = async ( payload: Partial<IBooking>, userId: string ) =>
 {
+    // transaction roll back!!
     const session = await Booking.startSession();
     await session.startTransaction();
 
