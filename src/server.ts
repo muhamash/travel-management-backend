@@ -5,13 +5,15 @@ import app from "./app/app";
 import { envStrings } from "./app/config/env.config";
 import { AppError } from "./app/config/errors/App.error";
 import { dbConnect } from "./app/config/mongoose.config";
+import { connectRedis } from "./app/modules/otp/redis.config";
 
 const startServer = async() =>
 {
     try 
     {
 
-        await dbConnect()
+        await dbConnect();
+        await connectRedis();
         
         const server : Server = app.listen( envStrings.PORT, () =>
         {
