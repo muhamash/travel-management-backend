@@ -17,7 +17,7 @@ import { AppError } from "../config/errors/App.error";
 // })
 
 const transporter = nodemailer.createTransport( {
-    host: "smtp.gmail.com",
+    host: "smtp.ethereal.email",
     port: 587,
     secure: false,
     auth: {
@@ -59,7 +59,7 @@ export const sendEmail = async ({
                 contentType: attachment.contentType
             }))
         })
-        console.log(`\u2709\uFE0F Email sent to ${to}: ${info.messageId}`);
+        console.log(`\u2709\uFE0F Email sent to ${to}: ${info.messageId}`, info);
     }
     catch ( error: any )
     {

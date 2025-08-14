@@ -33,7 +33,7 @@ export const sendOTpService = async ( email: string, name: string ) =>
         }
     } )
 
-    await sendEmail( {
+    const sentEmail = await sendEmail( {
         to: email,
         subject: "Your OTP Code",
         templateName: "otp",
@@ -41,7 +41,9 @@ export const sendOTpService = async ( email: string, name: string ) =>
             name: name,
             otp: otp
         }
-    } )
+    } );
+
+    console.log(sentEmail)
 };
 
 export const verifyOTP = async (email: string, otp: string) => {
