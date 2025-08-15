@@ -100,3 +100,16 @@ export const updateUser = asyncHandler( async ( req: Request, res: Response, nex
         next()
     }
 } );
+
+export const getMe = asyncHandler( async ( req: Request, res: Response ) =>
+{
+    const user = "hello world";
+
+    console.log("hit! get me")
+
+    responseFunction( res, {
+        data: user,
+        statusCode: httpStatus.OK,
+        message: "user fetched successfully!!"
+    })
+})

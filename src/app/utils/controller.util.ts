@@ -16,6 +16,7 @@ export const setCookie = async (res: Response, cookieName: string, cookieData, m
     res.cookie( cookieName, cookieData, {
         httpOnly: true,
         secure: false,
-        maxAge
+        maxAge,
+        
     } );
 }

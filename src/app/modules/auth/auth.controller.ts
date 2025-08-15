@@ -21,7 +21,7 @@ export const googleAuthLogin = asyncHandler( async ( req: Request, res: Response
 export const googleAuthCallback = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
     const user = req.user;
-    const state = req.query.state as string || "";
+    let state = req.query.state as string || "";
 
     console.log( state, user, "google callback" );
     
@@ -48,7 +48,9 @@ export const googleAuthCallback = asyncHandler( async ( req: Request, res: Respo
         next( error )
     }
 
-    res.redirect( `http://localhost:3000/${ state }` );
+    console.log( state )
+    // http://localhost:5173/login
+    res.redirect( `http://localhost:5173/${ state }` );
 } );
 
 
