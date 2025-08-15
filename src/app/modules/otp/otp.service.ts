@@ -8,7 +8,6 @@ const OTP_EXPIRATION = 2 * 60;
 
 export const sendOTpService = async ( email: string, name: string ) =>
 {
-
     const user = await User.findOne( { email } );
 
     console.log(user, email)
@@ -46,7 +45,7 @@ export const sendOTpService = async ( email: string, name: string ) =>
     console.log(sentEmail)
 };
 
-export const verifyOTP = async (email: string, otp: string) => {
+export const verifyOTPService = async (email: string, otp: string) => {
     // const user = await User.findOne({ email, isVerified: false })
     const user = await User.findOne({ email })
 
