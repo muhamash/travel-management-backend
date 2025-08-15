@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { NextFunction, Request, Response } from "express";
 import slugify from "slugify";
 import { envStrings } from "../config/env.config";
@@ -56,3 +57,11 @@ export const createTransactionId = () =>
 {
     return `transaction${ Date.now() }_${ Math.floor( Math.random() * 10000 ) }`;
 }
+
+export const generateOtp = ( length = 6 ) =>
+{
+    //6 digit otp
+    const otp = crypto.randomInt( 10 ** ( length - 1 ), 10 ** length ).toString()
+
+    return otp
+};
