@@ -103,8 +103,7 @@ export const updateUser = asyncHandler( async ( req: Request, res: Response, nex
 
 export const getMe = asyncHandler( async ( req: Request, res: Response ) =>
 {
-    const user = "hello world";
-
+    const user = req.user;
     console.log("hit! get me")
 
     responseFunction( res, {

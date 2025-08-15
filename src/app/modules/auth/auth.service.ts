@@ -90,3 +90,8 @@ export const resetPasswordService = async ( oldPass: string, newPass: string, de
 
     return user?.save();
 };
+
+// export const getUserService = async ({}) =>
+// {
+    
+// }
