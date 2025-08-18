@@ -10,6 +10,8 @@ export const createDivisionService = async ( divisionData: IDivision ) =>
         // slug: generateSlug(divisionData.name)
     } );
 
+    console.log(divisionData)
+
     return newDivision;
 }
 

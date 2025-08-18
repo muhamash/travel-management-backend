@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { envStrings } from '../../config/env.config';
+import { envStrings } from './env.config';
 
 export const redisClient = createClient({
     username: envStrings.REDIS_USERNAME || undefined,

@@ -25,7 +25,7 @@ export const googleAuthCallback = asyncHandler( async ( req: Request, res: Respo
 
     console.log( state, user, "google callback" );
     
-    if ( state.startsWith("/") )
+    if ( state.startsWith( "/" ) )
     {
         state = state.slice( 1 );
     }
@@ -39,9 +39,11 @@ export const googleAuthCallback = asyncHandler( async ( req: Request, res: Respo
 
     try
     {
-        await setCookie( res, "refreshToken", loginData.refreshToken, 240 * 60 * 60 * 1000 );
+        await setCookie( res, "refreshToken", loginData.refreshToken, 30 * 1000 );
+        await setCookie( res, "accessToken", loginData.accessToken, 30 * 1000 );
 
-        await setCookie( res, "accessToken", loginData.accessToken, 100 * 60 * 1000 );
+
+        console.log()
     }
     catch ( error: unknown )
     {

@@ -8,20 +8,16 @@ import { createDivisionService, deleteDivisionService, getAllDivisionsService, g
 export const createDivision = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
 
-    const divisionData = req.body;
-    // console.log(divisionData)
-    if ( !divisionData.name )
-    {
-        responseFunction( res, {
-            message: `Name is required`,
-            statusCode: httpStatus.EXPECTATION_FAILED,
-            data: null,
-        } );
-
-        return;
+    // console.log(req.file);
+    const payload: IDivision = {
+        ...req.body,
+        thumbnail: req.file?.path
     }
 
-    const newDivision = await createDivisionService( divisionData );
+    // console.log(payload, req.body)
+
+
+    const newDivision = await createDivisionService( payload );
     if ( !newDivision )
     {
         responseFunction( res, {
