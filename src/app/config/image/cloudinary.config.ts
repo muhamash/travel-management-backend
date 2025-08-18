@@ -11,12 +11,13 @@ import { AppError } from "../errors/App.error";
 
 //req.file -> cloudinary(req.file) -> url -> mongoose -> mongodb
 
+// console.log(envStrings)
 
-cloudinary.config({
-    cloud_name: envStrings.CLOUDINARY.CLOUDINARY_CLOUD_NAME,
-    api_key: envStrings.CLOUDINARY.CLOUDINARY_API_KEY,
-    api_secret: envStrings.CLOUDINARY.CLOUDINARY_API_SECRET
-})
+cloudinary.config( {
+    cloud_name: envStrings.CLOUDINARY_CLOUD_NAME,
+    api_key: envStrings.CLOUDINARY_API_KEY,
+    api_secret: envStrings.CLOUDINARY_API_SECRET
+} );
 
 export const uploadBufferToCloudinary = async (buffer: Buffer, fileName: string): Promise<UploadApiResponse | undefined> => {
     try {

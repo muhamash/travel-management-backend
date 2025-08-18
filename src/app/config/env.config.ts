@@ -21,6 +21,9 @@ export const envStrings: EnvString = {
     REDIS_PASSWORD: process.env.REDIS_PASSWORD || "",
     GMAIL_ADDRESS_HOST: process.env.GMAIL_ADDRESS_HOST,
     GMAIL_APP_PASS: process.env.GMAIL_APP_PASS,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     // GMAIL_ADDRESS_HOST: process.env.GMAIL_ADDRESS_HOST,
 
 };
