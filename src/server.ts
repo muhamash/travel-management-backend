@@ -5,7 +5,7 @@ import app from "./app/app";
 import { envStrings } from "./app/config/env.config";
 import { AppError } from "./app/config/errors/App.error";
 import { dbConnect } from "./app/config/mongoose.config";
-import { connectRedis } from "./app/modules/otp/redis.config";
+import { connectRedis } from "./app/config/redis.config";
 
 const startServer = async() =>
 {

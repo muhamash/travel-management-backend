@@ -1,8 +1,8 @@
 import { AppError } from "../../config/errors/App.error";
+import { redisClient } from "../../config/redis.config";
 import { sendEmail } from "../../utils/sendEmail";
 import { generateOtp } from "../../utils/service.util";
 import { User } from "../user/user.model";
-import { redisClient } from "./redis.config";
 
 const OTP_EXPIRATION = 2 * 60;
 
