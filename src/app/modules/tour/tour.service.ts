@@ -60,6 +60,8 @@ export const createTourService = async ( tourData: ITour, user: Partial<IUser> )
         throw new AppError( httpStatus.NOT_FOUND, `Tour division with id: ${ tourData.division } is not found at the database!!` );
     }
 
+    console.log(tourData)
+
     const tour = await Tour.create( {
         ...tourData,
         host: user?.userId,

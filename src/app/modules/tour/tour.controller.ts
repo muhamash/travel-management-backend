@@ -188,7 +188,13 @@ export const deleteTourType = asyncHandler( async ( req: Request, res: Response,
 export const createTour = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {
     const user = req.user;
-    const createdTour = await createTourService( req.body, user );
+
+    // console.log(req.file, req.body)
+    const multerFiles = ( req.file as Express.Multer.File[] ).map( file => file.path );
+
+    console.log(multerFiles)
+
+    const createdTour = await createTourService( {...req.body, images: multerFiles(req.file as Express.Multer.File[])}, user );
 
     if ( !createdTour )
     {
