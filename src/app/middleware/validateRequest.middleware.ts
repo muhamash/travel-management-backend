@@ -5,7 +5,7 @@ export const validateRequest = ( zodSchema: AnyZodObject ) => async ( req: Reque
 {
     try 
     {
-        console.log(req.body, req.file)
+        // console.log(req.body, req.body.file)
         if (req.body?.data) {
             req.body = JSON.parse(req.body.data)
         }
@@ -15,7 +15,7 @@ export const validateRequest = ( zodSchema: AnyZodObject ) => async ( req: Reque
     }
     catch ( error: unknown )
     {
-        console.log(error.format())
+        // console.log(error.format())
         next(error)
     }
 }

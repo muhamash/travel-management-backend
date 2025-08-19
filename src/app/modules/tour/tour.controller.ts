@@ -185,28 +185,31 @@ export const deleteTourType = asyncHandler( async ( req: Request, res: Response,
 } );    
 
 // tour controller functions
-export const createTour = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
-{
-    const user = req.user;
-
-    // console.log(req.file, req.body)
-    const multerFiles = ( req.file as Express.Multer.File[] ).map( file => file.path );
-
-    console.log(multerFiles)
-
-    const createdTour = await createTourService( {...req.body, images: multerFiles(req.file as Express.Multer.File[])}, user );
-
-    if ( !createdTour )
+export const createTour = asyncHandler(
+    async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
     {
-        throw new AppError(httpStatus.BAD_REQUEST, "Can't create the tour!")
-    }
+        const user = req.user;
 
-    responseFunction( res, {
-        message: "Tour created successfully",
-        statusCode: httpStatus.CREATED,
-        data: createdTour, 
-    } );
-} );
+        console.log( "req.body:", req.body );
+        console.log( "req.files:", req.files );
+
+        // If you used 'files' as the field name in frontend FormData
+        const uploadedFiles = ( req.files as Express.Multer.File[] ).map( file => file.path );
+        
+        const createdTour = await createTourService( { ...JSON.parse( req.body.data ), images: uploadedFiles }, req.user );
+
+        if ( !createdTour )
+        {
+            throw new AppError( httpStatus.BAD_REQUEST, "Can't create the tour!" );
+        }
+
+        responseFunction( res, {
+            message: "Tour created successfully",
+            statusCode: httpStatus.CREATED,
+            data: createdTour,
+        } );
+    }
+);
 
 export const getAllTour = asyncHandler( async ( req: Request, res: Response, next: NextFunction ): Promise<void> =>
 {

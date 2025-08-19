@@ -48,6 +48,7 @@ export const updateTourTypeService = async ( tourTypeId: string, name: string ) 
 // service functions for Tours
 export const createTourService = async ( tourData: ITour, user: Partial<IUser> ) =>
 {
+    // console.log(tourData)
     const isExistTourType = await TourType.findById( tourData.tourType );
     if ( !isExistTourType )
     {
