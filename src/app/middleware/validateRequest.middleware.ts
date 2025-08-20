@@ -5,6 +5,7 @@ export const validateRequest = ( zodSchema: AnyZodObject ) => async ( req: Reque
 {
     try 
     {
+        // console.log(req.body, req.body.file)
         if (req.body?.data) {
             req.body = JSON.parse(req.body.data)
         }
